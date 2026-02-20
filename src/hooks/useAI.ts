@@ -46,7 +46,7 @@ function parseAIJson(raw: string): AIResults {
   return JSON.parse(text);
 }
 import { BrainstormForm, AIResults, ChatMessage } from '../types';
-import { callAI, callAIWithKey, testConn, DEFAULT_MODEL_ID } from '../constants/models';
+import { callAI, callAIWithKey, testConn, DEFAULT_MODEL_ID, isProMode } from '../constants/models';
 import { FREE_DEPTH, PRO_DEPTH } from '../constants/prompts';
 
 export const useAI = () => {
@@ -208,7 +208,7 @@ JSONのみ回答:
       return;
     }
 
-    const proMode = apiKey.trim().startsWith('sk-');
+    const proMode = isProMode(apiKey);
     const depTable = proMode ? PRO_DEPTH : FREE_DEPTH;
     const dc = depTable[dep] || depTable[1];
 
@@ -263,7 +263,7 @@ JSONのみ回答:
     if (!reviewText.trim() || !results) return;
     setRefining(true);
     setError(null);
-    const proMode = apiKey.trim().startsWith('sk-');
+    const proMode = isProMode(apiKey);
 
     try {
       const msg: ChatMessage = { role: 'user', content: `あなたは戦略コンサルタントです。以下のレビュー・フィードバックに基づき、戦略提案をブラッシュアップしてください。\n\n【前提条件】現状を批判せず、強みを活かした建設的な改善提案に絞る。担当者が実行できる具体案を出す。\n\n【レビュー内容】${reviewText}\n\nMarkdown形式（見出し・箇条書き活用）で回答してください。` };
@@ -318,7 +318,7 @@ JSONのみ回答:
     if (!results) return;
     setDiving(true);
     setError(null);
-    const proMode = apiKey.trim().startsWith('sk-');
+    const proMode = isProMode(apiKey);
     const currentResults = results;
 
     try {
