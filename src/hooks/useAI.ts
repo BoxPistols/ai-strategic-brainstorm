@@ -275,6 +275,34 @@ ${commonConditions}。
     setRefining(false);
   }, [reviewText, results, hist, modelId]);
 
+  /** seedデータなど、APIが使えない場合のフォールバック深掘り回答を生成 */
+  const buildFallbackDeepDive = (q: string, r: AIResults): string => {
+    // 質問に最も関連するアイデアを特定
+    const qWords = q.replace(/[？?は。、]/g, ' ').split(/\s+/).filter(w => w.length > 1);
+    const scored = r.ideas.map(idea => {
+      const text = `${idea.title} ${idea.description}`;
+      const hits = qWords.filter(w => text.includes(w)).length;
+      return { idea, hits };
+    });
+    scored.sort((a, b) => b.hits - a.hits);
+    const top = scored.slice(0, 3).map(s => s.idea);
+
+    let md = `この質問は、現在検討中の戦略アイデアのうち以下の施策と密接に関連しています。\n\n`;
+    md += `## 関連する重点施策\n\n`;
+    top.forEach((idea, i) => {
+      md += `### ${i + 1}. ${idea.title}\n\n${idea.description}\n\n`;
+      md += `- **優先度**: ${idea.priority} / **工数**: ${idea.effort} / **インパクト**: ${idea.impact}\n\n`;
+    });
+    md += `## 推奨アクション\n\n`;
+    md += `| フェーズ | アクション | 期待効果 |\n|---|---|---|\n`;
+    top.forEach((idea, i) => {
+      const phase = i === 0 ? '即座（〜2週間）' : i === 1 ? '短期（1-3ヶ月）' : '中期（3-6ヶ月）';
+      md += `| ${phase} | ${idea.title}の着手 | ${idea.impact}インパクト |\n`;
+    });
+    md += `\n> **注**: この回答はseedデータに基づく参考情報です。APIキーを設定するとAIによる詳細分析が利用できます。`;
+    return md;
+  };
+
   const deepDive = useCallback(async (q: string, apiKey = '') => {
     if (!results) return;
     setDiving(true);
@@ -296,8 +324,10 @@ ${commonConditions}。
         : await callAI(modelId, [msg], 2000);
 
       setResults(p => p ? ({ ...p, deepDive: (p.deepDive ? p.deepDive + '\n\n---\n\n' : '') + `### ${q}\n\n${raw}` }) : p);
-    } catch (e: any) {
-      setError(`深掘り失敗: ${e.message}`);
+    } catch {
+      // APIコール失敗時: seedデータのコンテキストからフォールバック回答を生成
+      const fallback = buildFallbackDeepDive(q, results);
+      setResults(p => p ? ({ ...p, deepDive: (p.deepDive ? p.deepDive + '\n\n---\n\n' : '') + `### ${q}\n\n${fallback}` }) : p);
     }
     setDiving(false);
   }, [results, modelId]);
