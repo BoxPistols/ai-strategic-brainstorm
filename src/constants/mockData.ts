@@ -245,6 +245,67 @@ export const MOCK_SCENARIOS: MockScenario[] = [
     },
   },
   {
+    label: 'IT人材紹介 事業戦略',
+    prov: 'openai', modelId: 'gpt-5-nano', dep: 2,
+    form: {
+      projectName: 'Nimbus-447',
+      productService: 'ITエンジニア特化の人材紹介エージェント（CA 15名・年間成約300件）',
+      teamGoals: '成約件数+40%・ハイスキル層（年収600万+）比率20%・CA一人当たり生産性1.5倍',
+      sessionType: 'other',
+      customSession: 'IT人材紹介 事業戦略',
+      tlMode: 'period',
+      tlStart: '2025-10-01',
+      tlEnd: '2026-09-30',
+      tlDead: '',
+      issues: [
+        { text: 'ハイスキル層の獲得難', detail: '登録者の70%がジュニア・レガシー系、ハイスキル層の登録比率8%で成約単価が低い', sub: ['エンジニアのエージェント不信が強く登録障壁が高い', '技術系コミュニティ・SNSへのリーチがない'] },
+        { text: '直接採用・競合増加で差別化が困難', detail: 'LinkedIn等での直接採用が3年で2倍増、大手との価格競争に巻き込まれている', sub: ['差別化ポイントが「担当者の質」のみで再現性・スケールなし', 'フィー値下げ圧力でLTVが低下'] },
+        { text: 'CA業務の属人化とスカウト効率の低さ', detail: 'スカウト返信率2〜3%、CA工数の40%をスカウト文作成が占め、ノウハウが個人依存', sub: [] },
+      ],
+    },
+    results: {
+      understanding: `IT人材紹介市場は構造的な転換期にある。直接採用・大手統合・AIマッチングの3つの圧力が同時に進行しており、「量×汎用」モデルの賞味期限が切れつつある。ハイスキルエンジニアは従来のエージェントモデルを嫌い、コミュニティや同業者の推薦を信頼する傾向が強まっている。差別化の軸は「エンジニアに信頼されるCA」から「エンジニアに信頼されるブランド・コミュニティ」への転換が必要。CA業務のAI化は生産性向上と同時にCA自身をより高付加価値な仕事（信頼構築・交渉）に集中させる基盤となる。`,
+      ideas: [
+        { title: 'ハイスキルエンジニア特化の独自ポジション確立', description: '「年収600万+のバックエンド・インフラ・ML系エンジニアに特化」など明確な絞り込みで大手との差別化を図る。特化することで求人の解像度が上がり、マッチング精度・内定率・フィー単価が同時に改善する。6ヶ月でニッチ1位ポジションの検証を実施。', priority: 'High', effort: 'Medium', impact: 'High' },
+        { title: 'エンジニアコミュニティへの参入と信頼構築', description: 'Zenn・Qiita・技術系Discordへのスポンサーや勉強会共催でブランドをエンジニアのいる場所で構築。「エージェントではなく技術キャリアの相談相手」としてポジショニング。コミュニティ経由の自然流入は広告CAC比で1/5以下の実績が業界内で報告されている。', priority: 'High', effort: 'Medium', impact: 'High' },
+        { title: 'AIスカウト×CA高付加価値化', description: 'GPT-4o APIを活用しスキル×求人×過去成約データからパーソナライズドスカウト文を自動生成。CA工数を現状の40%→5%に削減し、浮いた時間を面談品質・クロージング・企業リレーション強化に再投資。返信率3%→8%を目標とした検証スプリントを設計。', priority: 'High', effort: 'Medium', impact: 'High' },
+        { title: 'ユニットエコノミクスの再設計', description: 'セグメント別（スキル×年収帯）の成約率・フィー・CAC・LTVを計測し収益性の高いセグメントを特定。ジュニア・レガシー系は自動化（ローコスト対応）、ハイスキル系はCA集中投資のハイブリッドモデルに移行。現状「全員同じ対応」からの脱却。', priority: 'High', effort: 'Low', impact: 'High' },
+        { title: 'CA業務標準化×ナレッジDB構築', description: 'トップCAの面談ヒアリング・求人マッチング・クロージング手法を動画+テキストでドキュメント化。NotionベースのナレッジDBと月次ケーススタディ共有会で平均CAの成約率をトップCA比+50%に引き上げる。新人立ち上がり期間を6ヶ月→3ヶ月に短縮。', priority: 'Medium', effort: 'Medium', impact: 'High' },
+        { title: '企業クライアントのサクセス設計', description: '採用後3ヶ月・6ヶ月のフォローアップを標準化し、入社者の定着率データを企業に提供。「採用して終わり」から「採用後の定着支援」に価値を拡張することで、リピート率と単価の両立を図る。定着率データはEEATの強化にも活用可能。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
+      ],
+    },
+  },
+  {
+    label: 'CA業務 AI・DX化',
+    prov: 'openai', modelId: 'gpt-5-nano', dep: 2,
+    form: {
+      projectName: 'Anvil-583',
+      productService: 'ITエンジニア向け人材紹介（キャリアアドバイザー業務・Salesforce運用）',
+      teamGoals: 'CA一人当たり月次成約+50%・スカウト返信率3%→8%・CRM活用率80%達成',
+      sessionType: 'ops',
+      customSession: '',
+      tlMode: 'period',
+      tlStart: '2026-01-01',
+      tlEnd: '2026-06-30',
+      tlDead: '',
+      issues: [
+        { text: 'CRM活用不足', detail: 'SalesforceはデータDB化に留まり、自動アクション・スコアリング・アラートに未活用', sub: ['求職者の転職意欲変化をリアルタイム把握できない', 'CA間での顧客情報共有がSlack依存'] },
+        { text: 'スカウト効率の低さ', detail: 'スカウト返信率2〜3%・CA工数の40%を占める・テンプレート文で個別最適化なし', sub: [] },
+        { text: 'CA業務の属人化', detail: 'トップCAのノウハウが個人依存で、退職リスクと新人育成遅延が慢性的に発生', sub: [] },
+      ],
+    },
+    results: {
+      understanding: `CA業務の非効率は「CRMをDBとして使っている」「スカウトを量でカバーしている」「ノウハウを共有していない」の3つの構造問題が重なっている。Salesforceはレコード管理ではなく行動自動化ツールとして使うことで、CA一人当たりの対応キャパシティを30〜50%拡大できる。AIスカウト文生成はCAの単純労働を削減し、高付加価値な面談・交渉に集中させる投資対効果が最も高い施策。`,
+      ideas: [
+        { title: 'Salesforce活用度フェーズ別ロードマップ', description: 'CRM活用を「Level 1: データ入力」→「Level 2: 行動トリガー自動化」→「Level 3: スコアリング×予測」の3段階で設計。まず求職者の「ログイン・応募・資料閲覧」をトリガーにCA自動アラートを設定（Level 2）。工数ゼロでフォロータイミングが最適化され成約率+10〜15%の効果が見込める。', priority: 'High', effort: 'Medium', impact: 'High' },
+        { title: 'AIスカウト文生成の内製化', description: 'GPT-4o APIで「求職者スキルサマリー×求人JD×類似成約事例」を入力しパーソナライズドスカウト文を自動生成。CAはレビュー+送信のみに集中。スカウト作成工数を40%→5%に削減し、浮いた時間を面談・フォローに再配分。返信率3%→8%のABテストを4週間で実施。', priority: 'High', effort: 'Medium', impact: 'High' },
+        { title: '転職意欲スコアリングの自動化', description: '求職者の行動データ（ログイン頻度・求人閲覧数・資料DL・面談後の反応速度）をSalesforceにイベント連携し意欲スコアを自動算出。スコア上昇時のCA自動通知で「タイミングを逃さないフォロー」を実現。CA経験値に依らない対応品質の底上げ。', priority: 'High', effort: 'Medium', impact: 'High' },
+        { title: 'CAナレッジDB×ケーススタディ標準化', description: 'トップCAの「最初の15分の質問設計」「年収交渉のトークスクリプト」「内定後の不安解消フロー」をNotion動画+テキストでドキュメント化。月次ケーススタディ共有会と組み合わせ、新人CA立ち上がり6ヶ月→3ヶ月を目標に設計。', priority: 'Medium', effort: 'Low', impact: 'High' },
+        { title: 'JD（求人票）AI品質改善', description: '企業クライアントの既存JDをAIで分析し「エンジニアが離脱するポイント」を特定。技術スタック・開発環境・チーム構成・意思決定スピードなどエンジニアが重視する情報を追記するテンプレートを提供。JD品質向上で応募率・内定承諾率の改善を同時に図る。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
+      ],
+    },
+  },
+  {
     label: '求人メディア AIO転換',
     prov: 'openai', modelId: 'gpt-5-nano', dep: 2,
     form: {

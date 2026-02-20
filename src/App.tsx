@@ -108,6 +108,8 @@ export default function App() {
     const [showPrev, setShowPrev] = useState(false)
 
     const cm = MODELS.find((m) => m.id === modelId) || MODELS[0]
+    // AI生成サジェストがあればそちらを優先、なければstatic fallback
+    const displaySuggestions = results?.suggestions?.length ? results.suggestions : suggestions
     const report = results
         ? buildReportMd(usedName, form, results, 'OpenAI', cm.label, dep)
         : null
@@ -130,7 +132,7 @@ export default function App() {
 
     return (
         <div className={T.page}>
-            <div className='max-w-5xl mx-auto px-3 py-4 md:px-6 md:py-6'>
+            <div className='max-w-screen-2xl mx-auto px-4 py-4 md:px-8 md:py-6'>
                 {/* ── Header ── */}
                 <div className='flex items-center justify-between mb-4 flex-wrap gap-2'>
                     <div className='flex items-center gap-2.5'>
@@ -224,185 +226,188 @@ export default function App() {
                     />
                 )}
 
-                {/* ── Main Form ── */}
-                <div className={`${T.card} p-4 mb-4`}>
-                    <ProjectForm
-                        form={form}
-                        setForm={setForm}
-                        dep={dep}
-                        setDep={setDep}
-                        proMode={proMode}
-                    />
+                {/* ══════════ 2-col layout (lg+) ══════════ */}
+                <div className='flex flex-col lg:flex-row gap-5 items-start'>
 
-                    {/* Error */}
-                    {error && (
-                        <div className='mb-3 p-2.5 rounded-lg bg-red-50 dark:bg-red-900/15 border border-red-200 dark:border-red-700/40 flex items-start gap-2'>
-                            <AlertCircle className='w-3.5 h-3.5 text-red-500 mt-0.5 shrink-0' />
-                            <p className='text-red-700 dark:text-red-300 text-xs whitespace-pre-wrap'>
-                                {error}
-                            </p>
-                        </div>
-                    )}
-
-                    {/* Submit row */}
-                    <div className='flex items-center justify-between flex-wrap gap-2 mt-4'>
-                        {usedName && results && (
-                            <span className={`text-xs ${T.t3}`}>
-                                PJ:{' '}
-                                <span className={`font-medium ${T.accentTxt}`}>
-                                    {usedName}
-                                </span>
-                                {!form.projectName.trim() && (
-                                    <span className='ml-1 opacity-40'>
-                                        (auto)
-                                    </span>
-                                )}
-                            </span>
-                        )}
-                        <div className='ml-auto flex items-center gap-2'>
-                            {results && (
-                                <button
-                                    onClick={() => setShowPrev(true)}
-                                    className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs border ${T.btnGhost}`}
-                                >
-                                    <Eye className='w-3.5 h-3.5' />
-                                    プレビュー
-                                </button>
-                            )}
-                            <button
-                                onClick={handleGenerate}
-                                disabled={loading}
-                                className={`flex items-center gap-1.5 px-5 py-2 rounded-lg font-semibold text-sm ${T.btnAccent} disabled:opacity-40 transition-all`}
-                            >
-                                {loading ? (
-                                    <>
-                                        <div className='w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin' />
-                                        分析中…
-                                    </>
-                                ) : (
-                                    <>
-                                        <Sparkles className='w-4 h-4' />
-                                        戦略アイデア生成
-                                    </>
-                                )}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                {/* ══════════ Results ══════════ */}
-                {results && (
-                    <div className='space-y-3'>
-                        {/* Understanding */}
+                    {/* ── LEFT: Form pane (sticky on desktop) ── */}
+                    <div className='w-full lg:w-[480px] xl:w-[520px] lg:shrink-0 lg:sticky lg:top-4'>
                         <div className={`${T.card} p-4`}>
-                            <h3
-                                className={`text-xs font-semibold ${T.accentTxt} mb-2 flex items-center gap-1.5`}
-                            >
-                                <Target className='w-3.5 h-3.5' />
-                                AI 状況分析
-                            </h3>
-                            <RichText text={results.understanding} />
-                        </div>
+                            <ProjectForm
+                                form={form}
+                                setForm={setForm}
+                                dep={dep}
+                                setDep={setDep}
+                                proMode={proMode}
+                            />
 
-                        {/* Idea grid */}
-                        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3'>
-                            {results.ideas.map((idea, i) => (
-                                <ResultCard key={i} idea={idea} index={i} />
-                            ))}
-                        </div>
-
-                        {/* Deep-dive suggestions */}
-                        <div className={`${T.cardFlat} p-3`}>
-                            <h4
-                                className={`text-xs font-semibold ${T.t2} mb-2 flex items-center gap-1`}
-                            >
-                                <Search className='w-3 h-3' />
-                                深掘りサジェスト
-                            </h4>
-                            <div className='flex flex-wrap gap-1.5'>
-                                {suggestions.map((q, i) => (
-                                    <button
-                                        key={i}
-                                        onClick={() => deepDive(q, apiKey)}
-                                        disabled={diving}
-                                        className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs border ${T.btnGhost} hover:border-blue-300 dark:hover:border-blue-700/50 hover:text-blue-600 dark:hover:text-blue-400 disabled:opacity-30 transition`}
-                                    >
-                                        <ChevronRight className='w-3 h-3' />
-                                        {q}
-                                    </button>
-                                ))}
-                            </div>
-                            {diving && (
-                                <div
-                                    className={`mt-2 flex items-center gap-1.5 text-xs ${T.t3}`}
-                                >
-                                    <div className='w-3 h-3 border-2 border-slate-300 dark:border-slate-600 border-t-blue-500 rounded-full animate-spin' />
-                                    分析中…
+                            {/* Error */}
+                            {error && (
+                                <div className='mb-3 p-2.5 rounded-lg bg-red-50 dark:bg-red-900/15 border border-red-200 dark:border-red-700/40 flex items-start gap-2'>
+                                    <AlertCircle className='w-3.5 h-3.5 text-red-500 mt-0.5 shrink-0' />
+                                    <p className='text-red-700 dark:text-red-300 text-xs whitespace-pre-wrap'>
+                                        {error}
+                                    </p>
                                 </div>
                             )}
-                        </div>
 
-                        {/* Deep dive output */}
-                        {results.deepDive && (
-                            <div
-                                className={`${T.card} p-4 border-l-2 border-l-blue-400 dark:border-l-blue-600`}
-                            >
-                                <h4
-                                    className={`text-xs font-semibold ${T.accentTxt} mb-2 flex items-center gap-1`}
-                                >
-                                    <Search className='w-3.5 h-3.5' />
-                                    深掘り分析
-                                </h4>
-                                <RichText text={results.deepDive} />
-                            </div>
-                        )}
-
-                        {/* Refinement output */}
-                        {results.refinement && (
-                            <div className='bg-emerald-50 dark:bg-emerald-900/10 border border-emerald-200 dark:border-emerald-800/30 rounded-xl p-4'>
-                                <h4 className='text-xs font-semibold text-emerald-700 dark:text-emerald-400 mb-2 flex items-center gap-1'>
-                                    <RefreshCw className='w-3.5 h-3.5' />
-                                    ブラッシュアップ
-                                </h4>
-                                <RichText text={results.refinement} />
-                            </div>
-                        )}
-
-                        {/* Review input */}
-                        <div className={`${T.cardFlat} p-3`}>
-                            <h4
-                                className={`text-xs font-semibold ${T.t2} mb-2 flex items-center gap-1`}
-                            >
-                                <MessageSquarePlus className='w-3 h-3' />
-                                レビュー & ブラッシュアップ
-                            </h4>
-                            <textarea
-                                value={reviewText}
-                                onChange={(e) => setReviewText(e.target.value)}
-                                rows={2}
-                                placeholder='方向性修正、追加観点、深掘りポイント…'
-                                className={`${T.inp} resize-none mb-2`}
-                            />
-                            <button
-                                onClick={handleRefine}
-                                disabled={refining || !reviewText.trim()}
-                                className='flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-emerald-600 hover:bg-emerald-500 text-white disabled:opacity-30 transition'
-                            >
-                                {refining ? (
-                                    <>
-                                        <div className='w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin' />
-                                        処理中…
-                                    </>
-                                ) : (
-                                    <>
-                                        <RefreshCw className='w-3 h-3' />
-                                        ブラッシュアップ
-                                    </>
+                            {/* Submit row */}
+                            <div className='flex items-center justify-between flex-wrap gap-2 mt-4'>
+                                {usedName && results && (
+                                    <span className={`text-xs ${T.t3}`}>
+                                        PJ:{' '}
+                                        <span className={`font-medium ${T.accentTxt}`}>
+                                            {usedName}
+                                        </span>
+                                        {!form.projectName.trim() && (
+                                            <span className='ml-1 opacity-40'>(auto)</span>
+                                        )}
+                                    </span>
                                 )}
-                            </button>
+                                <div className='ml-auto flex items-center gap-2'>
+                                    {results && (
+                                        <button
+                                            onClick={() => setShowPrev(true)}
+                                            className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs border ${T.btnGhost}`}
+                                        >
+                                            <Eye className='w-3.5 h-3.5' />
+                                            プレビュー
+                                        </button>
+                                    )}
+                                    <button
+                                        onClick={handleGenerate}
+                                        disabled={loading}
+                                        className={`flex items-center gap-1.5 px-5 py-2 rounded-lg font-semibold text-sm ${T.btnAccent} disabled:opacity-40 transition-all`}
+                                    >
+                                        {loading ? (
+                                            <>
+                                                <div className='w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin' />
+                                                分析中…
+                                            </>
+                                        ) : (
+                                            <>
+                                                <Sparkles className='w-4 h-4' />
+                                                戦略アイデア生成
+                                            </>
+                                        )}
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                )}
+
+                    {/* ── RIGHT: Results pane ── */}
+                    <div className='w-full flex-1 min-w-0'>
+                        {results ? (
+                            <div className='space-y-4'>
+                                {/* Understanding */}
+                                <div className={`${T.card} p-5`}>
+                                    <h3 className={`text-xs font-semibold ${T.accentTxt} mb-2.5 flex items-center gap-1.5`}>
+                                        <Target className='w-3.5 h-3.5' />
+                                        AI 状況分析
+                                    </h3>
+                                    <RichText text={results.understanding} />
+                                </div>
+
+                                {/* Idea grid — 2col on md, 3col on xl */}
+                                <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3'>
+                                    {results.ideas.map((idea, i) => (
+                                        <ResultCard key={i} idea={idea} index={i} />
+                                    ))}
+                                </div>
+
+                                {/* Deep-dive suggestions */}
+                                <div className={`${T.cardFlat} p-3`}>
+                                    <h4 className={`text-xs font-semibold ${T.t2} mb-2 flex items-center gap-1`}>
+                                        <Search className='w-3 h-3' />
+                                        深掘りサジェスト
+                                    </h4>
+                                    <div className='flex flex-wrap gap-1.5'>
+                                        {displaySuggestions.map((q, i) => (
+                                            <button
+                                                key={i}
+                                                onClick={() => deepDive(q, apiKey)}
+                                                disabled={diving}
+                                                className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs border ${T.btnGhost} hover:border-blue-300 dark:hover:border-blue-700/50 hover:text-blue-600 dark:hover:text-blue-400 disabled:opacity-30 transition`}
+                                            >
+                                                <ChevronRight className='w-3 h-3' />
+                                                {q}
+                                            </button>
+                                        ))}
+                                    </div>
+                                    {diving && (
+                                        <div className={`mt-2 flex items-center gap-1.5 text-xs ${T.t3}`}>
+                                            <div className='w-3 h-3 border-2 border-slate-300 dark:border-slate-600 border-t-blue-500 rounded-full animate-spin' />
+                                            分析中…
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* Deep dive output */}
+                                {results.deepDive && (
+                                    <div className={`${T.card} p-5 border-l-2 border-l-blue-400 dark:border-l-blue-600`}>
+                                        <h4 className={`text-xs font-semibold ${T.accentTxt} mb-2 flex items-center gap-1`}>
+                                            <Search className='w-3.5 h-3.5' />
+                                            深掘り分析
+                                        </h4>
+                                        <RichText text={results.deepDive} />
+                                    </div>
+                                )}
+
+                                {/* Refinement output */}
+                                {results.refinement && (
+                                    <div className='bg-emerald-50 dark:bg-emerald-900/10 border border-emerald-200 dark:border-emerald-800/30 rounded-xl p-5'>
+                                        <h4 className='text-xs font-semibold text-emerald-700 dark:text-emerald-400 mb-2 flex items-center gap-1'>
+                                            <RefreshCw className='w-3.5 h-3.5' />
+                                            ブラッシュアップ
+                                        </h4>
+                                        <RichText text={results.refinement} />
+                                    </div>
+                                )}
+
+                                {/* Review input */}
+                                <div className={`${T.cardFlat} p-4`}>
+                                    <h4 className={`text-xs font-semibold ${T.t2} mb-2 flex items-center gap-1`}>
+                                        <MessageSquarePlus className='w-3 h-3' />
+                                        レビュー & ブラッシュアップ
+                                    </h4>
+                                    <textarea
+                                        value={reviewText}
+                                        onChange={(e) => setReviewText(e.target.value)}
+                                        rows={3}
+                                        placeholder='方向性修正、追加観点、深掘りポイント…'
+                                        className={`${T.inp} resize-none mb-2`}
+                                    />
+                                    <button
+                                        onClick={handleRefine}
+                                        disabled={refining || !reviewText.trim()}
+                                        className='flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-emerald-600 hover:bg-emerald-500 text-white disabled:opacity-30 transition'
+                                    >
+                                        {refining ? (
+                                            <>
+                                                <div className='w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin' />
+                                                処理中…
+                                            </>
+                                        ) : (
+                                            <>
+                                                <RefreshCw className='w-3 h-3' />
+                                                ブラッシュアップ
+                                            </>
+                                        )}
+                                    </button>
+                                </div>
+                            </div>
+                        ) : (
+                            /* Empty state (desktop only) */
+                            <div className={`hidden lg:flex flex-col items-center justify-center h-64 rounded-xl border-2 border-dashed ${T.div} gap-3`}>
+                                <Sparkles className={`w-8 h-8 ${T.t3} opacity-30`} />
+                                <p className={`text-sm ${T.t3} opacity-50`}>
+                                    左のフォームを入力して生成ボタンを押すと、ここに結果が表示されます
+                                </p>
+                            </div>
+                        )}
+                    </div>
+
+                </div>
             </div>
 
             {/* Modals */}

@@ -101,7 +101,23 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
             return { ...p, issues: is }
         })
 
-    const issueTpl = ISSUE_TPL[form.sessionType] || ISSUE_TPL.other
+    // HR/人材紹介文脈の検出: productService や既存issueテキストにキーワードがあればops系テンプレートを優先
+    const hrKeywords = /人材|採用|エージェント|CA\b|転職|求人|スカウト|人事|キャリア|リクルート/
+    const isHRContext =
+        hrKeywords.test(form.productService) ||
+        form.issues.some((iss) => hrKeywords.test(iss.text + iss.detail))
+
+    const issueTemplateKey =
+        isHRContext && !['ops', 'cx', 'growth'].includes(form.sessionType)
+            ? 'ops'
+            : form.sessionType
+
+    const issueTpl = isHRContext
+        ? [
+              ...(ISSUE_TPL['ops'] ?? []),
+              ...(ISSUE_TPL['cx'] ?? []).slice(0, 2),
+          ]
+        : (ISSUE_TPL[form.sessionType] ?? ISSUE_TPL.other)
 
     return (
         <>
@@ -133,7 +149,7 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
                         name='productService'
                         value={form.productService}
                         onChange={onF}
-                        placeholder='例: ドローン点検SaaS'
+                        placeholder='プロダクト / サービスカテゴリ名'
                         className={T.inp}
                     />
                     {form.productService === '' && (
@@ -315,7 +331,11 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
                             >
                                 <span className='font-medium'>{v.label}</span>
                                 <span className='opacity-50'> · {v.desc}</span>
-                                <span className={`ml-1 text-xs ${Number(k) === dep ? 'text-slate-400' : T.t3}`}>{v.wait}</span>
+                                <span
+                                    className={`ml-1 text-xs ${Number(k) === dep ? 'text-slate-400' : T.t3}`}
+                                >
+                                    {v.wait}
+                                </span>
                             </button>
                         ))}
                     </div>
@@ -380,7 +400,7 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
                     {issueTemplateOpen && (
                         <div className='mt-1.5 space-y-1.5'>
                             {(
-                                ISSUE_TEMPLATES[form.sessionType] ||
+                                ISSUE_TEMPLATES[issueTemplateKey] ||
                                 ISSUE_TEMPLATES.other
                             ).map((tpl, i) => (
                                 <button
