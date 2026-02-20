@@ -31,7 +31,7 @@ import { ResultCard } from './components/results/ResultCard'
 import { RichText } from './components/results/RichText'
 
 // Utils & Constants
-import { buildReportMd } from './utils/report'
+import { buildReportMd, dlFile } from './utils/report'
 import { T } from './constants/theme'
 import { MODELS } from './constants/models'
 
@@ -452,11 +452,20 @@ export default function App() {
                     onClose={() => setShowLogs(false)}
                     onDelete={deleteLog}
                     onDeleteAll={deleteAllLogs}
-                    onExportAll={() => console.log('Exporting...', logs)}
-                    onExportAnswers={() =>
-                        console.log('Exporting answers...', logs)
-                    }
-                    onExportOne={(l) => console.log('Exporting one...', l)}
+                    onExportAll={() => {
+                        const data = JSON.stringify(logs, null, 2);
+                        dlFile(data, `brainstorm-logs-${Date.now()}.json`, 'application/json');
+                    }}
+                    onExportAnswers={() => {
+                        const answers = logs.map(l => ({
+                            id: l.id, projectName: l.projectName, timestamp: l.timestamp,
+                            model: l.model, depth: l.depth, results: l.results,
+                        }));
+                        dlFile(JSON.stringify(answers, null, 2), `brainstorm-answers-${Date.now()}.json`, 'application/json');
+                    }}
+                    onExportOne={(l) => {
+                        dlFile(JSON.stringify(l, null, 2), `brainstorm-${l.projectName || l.id}.json`, 'application/json');
+                    }}
                     onImport={importLogs}
                     settings={stgSettings}
                     onSettings={updateSettings}
