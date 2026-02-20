@@ -1,5 +1,8 @@
 import { ModelInfo, ChatMessage } from '../types';
 
+/** APIキーがPro mode（ユーザー所有）か判定 */
+export const isProMode = (apiKey: string): boolean => apiKey.trim().startsWith('sk-');
+
 const friendlyError = (status: number, body: string): string => {
   if (status === 429) return 'APIレート制限に達しました。しばらく待ってから再試行してください。';
   if (status === 401) return 'APIキーが無効です。設定を確認してください。';
@@ -24,7 +27,7 @@ export const MODELS: ModelInfo[] = [
 export const testConn = async (modelId: string, apiKey = ''): Promise<string> => {
   const usesCompletionTokens = modelId.startsWith('gpt-5') || modelId.startsWith('o');
   const tokenParam = usesCompletionTokens ? { max_completion_tokens: 100 } : { max_tokens: 100 };
-  const proMode = apiKey.trim().startsWith('sk-');
+  const proMode = isProMode(apiKey);
   const url = proMode ? API_DIRECT : API_PROXY;
   const headers: Record<string, string> = { 'Content-Type': 'application/json' };
   if (proMode) headers['Authorization'] = `Bearer ${apiKey.trim()}`;

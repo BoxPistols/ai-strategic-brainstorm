@@ -3,6 +3,7 @@ import { BrainstormForm } from '../types';
 import { nextSeed, getSeedByIndex, MOCK_SCENARIOS } from '../constants/mockData';
 import { TYPES, getDeepDiveSuggestions } from '../constants/prompts';
 import { autoN } from '../utils/formatters';
+import { isProMode } from '../constants/models';
 
 const initialFormState: BrainstormForm = {
   projectName: '',
@@ -63,7 +64,7 @@ export const useBrainstormForm = () => {
 
   const applySeed = useCallback((index?: number) => {
     const s = index !== undefined ? getSeedByIndex(index) : nextSeed();
-    const isPro = (localStorage.getItem('userApiKey') || '').trim().startsWith('sk-');
+    const isPro = isProMode(localStorage.getItem('userApiKey') || '');
 
     setSeedModelId(s.modelId);
     setDep(isPro ? s.dep : Math.min(s.dep, 3));
