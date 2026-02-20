@@ -5,6 +5,7 @@ import {
   CalendarRange, CalendarCheck, ChevronRight, Globe, Plus, Minus, Layers,
   SlidersHorizontal, Database, Upload, Trash2, ToggleLeft, ToggleRight,
   ExternalLink, Wifi, WifiOff, Loader, Sun, Moon, FlaskConical,
+  Lock, Unlock, HelpCircle, Key, ExternalLink as LinkIcon,
 } from 'lucide-react';
 
 /* ══════════════════════════════════════════════════════
@@ -251,17 +252,103 @@ const MODELS = [
   { id: 'gpt-4.1-nano', label: '4.1 Nano', t: '最安',    cost: '$'  },
 ];
 
-const callAI = async (modelId, msgs) => {
-  const usesCompletionTokens = modelId.startsWith('gpt-5') || modelId.startsWith('o');
-  const tokenParam = usesCompletionTokens ? { max_completion_tokens: 4096 } : { max_tokens: 4096 };
-  const r = await fetch('/api/openai/v1/chat/completions', {
+/* ══════════════════════════════════════════════════════
+   Depth levels — free (1-3) + pro (4-5)
+   tokens: max_completion_tokens for gpt-5-*, max_tokens otherwise
+   ══════════════════════════════════════════════════════ */
+const DEPTH = {
+  1: { label: 'Lite',     desc: '1-2分',  ideas: 3,  tokens: 600,  pro: false },
+  2: { label: 'Standard', desc: '3-5分',  ideas: 5,  tokens: 1400, pro: false },
+  3: { label: 'Deep',     desc: '5-10分', ideas: 7,  tokens: 2400, pro: false },
+  4: { label: 'Pro',      desc: '10-15分', ideas: 9,  tokens: 3800, pro: true  },
+  5: { label: 'Expert',   desc: '15-30分 / BCGコンサル級', ideas: 12, tokens: 5500, pro: true  },
+};
+
+/* User API key — stored in localStorage, never sent to our server */
+const USER_KEY_STORE = 'ai-brainstorm-user-key';
+const loadUserKey = () => { try { return localStorage.getItem(USER_KEY_STORE) || ''; } catch { return ''; } };
+const saveUserKey = (k) => { try { if (k) localStorage.setItem(USER_KEY_STORE, k); else localStorage.removeItem(USER_KEY_STORE); } catch {} };
+
+const callAI = async (modelId, msgs, tokens, userKey) => {
+  const useCompletion = modelId.startsWith('gpt-5') || modelId.startsWith('o');
+  const tokenParam = useCompletion ? { max_completion_tokens: tokens } : { max_tokens: tokens };
+  // If user provided their own key, call OpenAI directly (avoids shared quota)
+  const [url, headers] = userKey
+    ? ['https://api.openai.com/v1/chat/completions', { 'Content-Type': 'application/json', Authorization: `Bearer ${userKey}` }]
+    : ['/api/openai/v1/chat/completions',            { 'Content-Type': 'application/json' }];
+  const r = await fetch(url, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers,
     body: JSON.stringify({ model: modelId, ...tokenParam, messages: msgs }),
   });
   if (!r.ok) throw new Error(`${r.status}: ${(await r.text()).slice(0, 300)}`);
   return (await r.json()).choices?.[0]?.message?.content || '';
 };
+
+/* ══════════════════════════════════════════════════════
+   Help Modal
+   ══════════════════════════════════════════════════════ */
+const HelpModal = ({ onClose }) => (
+  <div className="fixed inset-0 z-50 flex items-center justify-center p-3 bg-black/50 backdrop-blur-sm" onClick={onClose}>
+    <div className={`bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600/70 rounded-xl w-full max-w-lg max-h-[90vh] flex flex-col shadow-2xl`} onClick={e => e.stopPropagation()}>
+      <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200 dark:border-slate-600/70 shrink-0">
+        <div className="flex items-center gap-2">
+          <HelpCircle className="w-4 h-4 text-blue-500" />
+          <span className="text-sm font-semibold text-slate-900 dark:text-slate-100">使い方 / APIキーについて</span>
+        </div>
+        <button onClick={onClose} className="p-1 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700/50 transition"><X className="w-4 h-4" /></button>
+      </div>
+      <div className="flex-1 overflow-y-auto p-4 space-y-5 text-sm">
+
+        {/* Free vs Pro */}
+        <section>
+          <h3 className="font-semibold text-slate-900 dark:text-slate-100 mb-2">フリーモード vs プロモード</h3>
+          <table className="w-full text-xs border-collapse">
+            <thead>
+              <tr className="bg-slate-50 dark:bg-slate-700/50">
+                <th className="px-3 py-2 text-left border border-slate-200 dark:border-slate-600/60 text-slate-700 dark:text-slate-200">項目</th>
+                <th className="px-3 py-2 text-left border border-slate-200 dark:border-slate-600/60 text-slate-700 dark:text-slate-200">フリー</th>
+                <th className="px-3 py-2 text-left border border-slate-200 dark:border-slate-600/60 text-blue-600 dark:text-blue-400">プロ (自分のAPIキー)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                ['分析深度', 'Lite / Standard / Deep', '+ Pro / Expert'],
+                ['生成アイデア数', '最大7件', '最大12件'],
+                ['回答の詳細度', 'コンパクト', '詳細・定量根拠付き'],
+                ['APIコスト', '無料 (共有枠)', '自分のOpenAIアカウント'],
+                ['利用制限', 'あり (共有枠)', 'なし'],
+              ].map(([item, free, pro]) => (
+                <tr key={item} className="even:bg-slate-50/50 dark:even:bg-slate-700/20">
+                  <td className="px-3 py-1.5 border border-slate-200 dark:border-slate-600/60 text-slate-600 dark:text-slate-300 font-medium">{item}</td>
+                  <td className="px-3 py-1.5 border border-slate-200 dark:border-slate-600/60 text-slate-500 dark:text-slate-400">{free}</td>
+                  <td className="px-3 py-1.5 border border-slate-200 dark:border-slate-600/60 text-blue-600 dark:text-blue-400">{pro}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </section>
+
+        {/* How to get API key */}
+        <section>
+          <h3 className="font-semibold text-slate-900 dark:text-slate-100 mb-2 flex items-center gap-1.5"><Key className="w-3.5 h-3.5 text-blue-500" />APIキーの取得方法</h3>
+          <ol className="space-y-2 text-slate-600 dark:text-slate-300">
+            <li className="flex gap-2"><span className="shrink-0 w-5 h-5 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 text-xs flex items-center justify-center font-medium">1</span><span><a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline inline-flex items-center gap-0.5">platform.openai.com/api-keys<ExternalLink className="w-3 h-3" /></a> を開く</span></li>
+            <li className="flex gap-2"><span className="shrink-0 w-5 h-5 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 text-xs flex items-center justify-center font-medium">2</span><span>「Create new secret key」をクリックし、キーをコピー（<code className="px-1 rounded bg-slate-100 dark:bg-slate-600/60 text-xs">sk-proj-...</code> から始まる文字列）</span></li>
+            <li className="flex gap-2"><span className="shrink-0 w-5 h-5 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 text-xs flex items-center justify-center font-medium">3</span><span>このアプリの設定（⚙）を開き「APIキー」欄に貼り付ける → プロモード解放</span></li>
+          </ol>
+        </section>
+
+        {/* Security */}
+        <section className="bg-slate-50 dark:bg-slate-700/30 rounded-lg p-3 text-xs text-slate-500 dark:text-slate-400 space-y-1">
+          <p className="font-medium text-slate-700 dark:text-slate-300">セキュリティについて</p>
+          <p>入力したAPIキーはブラウザのlocalStorageにのみ保存されます。このサービスのサーバーには送信されません。</p>
+          <p>OpenAI に直接リクエストが送られ、利用料金はあなたのOpenAIアカウントに請求されます。</p>
+        </section>
+      </div>
+    </div>
+  </div>
+);
 
 /* ══════════════════════════════════════════════════════
    Constants
@@ -274,7 +361,7 @@ const ll = v => ({ High: '高', Medium: '中', Low: '低' }[v] || v);
 
 const ISSUE_TPL = { product: ['技術的負債','UX課題','パフォーマンス','セキュリティ','スケーラビリティ'], marketing: ['認知不足','CAC高騰','チャネル最適化','CV率','コンテンツ品質'], growth: ['PMF未達','リテンション低下','LTV/CAC','市場飽和','新セグメント'], innovation: ['R&D投資不足','組織硬直','技術追従','実験文化','知財戦略'], cx: ['NPS低下','サポート遅延','オンボーディング','チャーン','VOC活用'], ops: ['プロセス非効率','コスト超過','品質管理','属人化','ツール分散'], dx: ['レガシー依存','データサイロ','リテラシー','変革抵抗','ROI可視化'], 'design-system': ['採用率','トークン設計','コンポーネント不足','ドキュメント','a11y'], other: ['リソース制約','組織課題','市場変化','技術課題','財務課題'] };
 
-const DEPTH = { 1: { label: 'Quick', desc: '概要・5min', ideas: 3 }, 2: { label: 'Standard', desc: '標準・15min', ideas: 6 }, 3: { label: 'Deep', desc: '詳細・30min', ideas: 8 }, 4: { label: 'BCG Grade', desc: '戦略コンサル級', ideas: 10 } };
+// DEPTH is defined above (near callAI)
 
 const SUGGEST = { product: ['アーキテクチャ刷新の判断基準は？','Build vs Buy意思決定フレームは？','テクニカルデット返済ROIは？','プラットフォーム戦略方向性は？','技術ロードマップ優先度は？'], marketing: ['GTM戦略の再構築案は？','ブランドエクイティ定量測定は？','マーケミックス最適配分は？','競合ポジショニングマップは？','ABM導入ROI予測は？'], growth: ['PMF検証の定量アプローチは？','ユニットエコノミクス改善レバーは？','セグメント別成長ポテンシャルは？','ネットワーク効果活用は？','グロースモデルのボトルネックは？'], innovation: ['ディスラプション・リスク評価は？','三つの地平線での配分は？','技術フィージビリティ検証は？','IP戦略最適解は？','イノベーション・ポートフォリオは？'], cx: ['ジャーニーのペインポイント分析は？','CX投資ROI定量化は？','プロアクティブサポート導入は？','セグメント別CX差別化は？','VoCインサイト抽出は？'], ops: ['バリューストリーム分析は？','RPA/AI自動化優先度は？','オペエクセレンスKPIは？','サプライチェーン最適化は？','ケイパビリティギャップは？'], dx: ['DXロードマップ段階設計は？','データガバナンス構築は？','クラウドマイグレーション戦略は？','AI/MLユースケース優先度は？','CoE設計は？'], 'design-system': ['成熟度モデルでの現在地は？','トークンアーキテクチャは？','コンポーネントAPI設計原則は？','Multi-brand拡張は？','開発者DX改善は？'], other: ['最重要KPIと先行指標は？','リスクマトリクスと対応策は？','ステークホルダー影響力分析は？','短期Win vs 中長期投資は？','意思決定プロセス改善は？'] };
 
@@ -422,10 +509,19 @@ export default function App() {
   const [isDark, setIsDark] = useState(() => { const d = getInitialDark(); applyTheme(d); return d; });
   const toggleTheme = () => setIsDark(d => { applyTheme(!d); return !d; });
 
-  // Model
-  const [modelId, setModelId] = useState('gpt-5-nano');
-  const [showCfg, setShowCfg] = useState(false);
+  // Model / API key
+  const [modelId,  setModelId]  = useState('gpt-5-nano');
+  const [userKey,  setUserKey]  = useState(() => loadUserKey());
+  const [showKey,  setShowKey]  = useState(false);
+  const [showCfg,  setShowCfg]  = useState(false);
+  const [showHelp, setShowHelp] = useState(false);
   const [connStatus, setConnStatus] = useState({ status: 'idle', msg: '' });
+
+  const isPro = userKey.trim().length > 10;
+
+  const onUserKey = (k) => { setUserKey(k); saveUserKey(k); setConnStatus({ status: 'idle', msg: '' }); // clamp dep to free range if key removed
+    if (!k.trim() && dep > 3) setDep(3);
+  };
 
   // Form
   const [dep, setDep] = useState(2);
