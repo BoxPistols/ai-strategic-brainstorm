@@ -14,7 +14,14 @@ export const buildReportMd = (
   const ses = form.sessionType === 'other' ? form.customSession : TYPES[form.sessionType];
   const tl = form.tlMode === 'period' ? `${form.tlStart || '?'} 〜 ${form.tlEnd || '?'}` : (form.tlDead || '未指定');
   
-  let md = `# AI Strategic Brainstorm Report\n\n| 項目 | 内容 |\n|---|---|\n| PJ | ${pn} |\n| プロダクト | ${form.productService} |\n| セッション | ${ses} |\n| タイムライン | ${tl} |\n| 深度 | ${DEPTH[dep].label} |\n| AI | ${provN}/${mL} |\n| 生成 | ${now} |\n\n`;
+  let md = `# AI Strategic Brainstorm Report\n\n`;
+  md += `- **プロジェクト**: ${pn}\n`;
+  md += `- **プロダクト/サービス**: ${form.productService}\n`;
+  md += `- **セッション種別**: ${ses}\n`;
+  md += `- **タイムライン**: ${tl}\n`;
+  md += `- **分析深度**: ${DEPTH[dep].label}\n`;
+  md += `- **使用モデル**: ${provN} / ${mL}\n`;
+  md += `- **生成日時**: ${now}\n\n`;
   
   md += `## 目標\n${form.teamGoals}\n\n`;
   
