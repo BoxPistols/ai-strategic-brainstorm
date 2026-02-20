@@ -22,12 +22,23 @@ export const ISSUE_TPL: Record<string, string[]> = {
   'other': ['リソース制約','組織課題','市場変化','技術課題','財務課題']
 };
 
-export const DEPTH: Record<number, { label: string; desc: string; ideas: number }> = {
-  1: { label: 'Quick', desc: '概要・5min', ideas: 3 },
-  2: { label: 'Standard', desc: '標準・15min', ideas: 6 },
-  3: { label: 'Deep', desc: '詳細・30min', ideas: 8 },
-  4: { label: 'BCG Grade', desc: '戦略コンサル級', ideas: 10 }
+// Free mode (no API key) — limited tiers
+export const FREE_DEPTH: Record<number, { label: string; desc: string; ideas: number; wait: string; maxTokens: number }> = {
+  1: { label: 'Lite',     desc: '速報',    ideas: 3, wait: '1-2分',  maxTokens: 800  },
+  2: { label: 'Standard', desc: '標準',    ideas: 5, wait: '3-5分',  maxTokens: 1500 },
+  3: { label: 'Deep',     desc: '詳細',    ideas: 7, wait: '5-10分', maxTokens: 2500 },
 };
+
+// Pro mode (user's own API key) — full tiers
+export const PRO_DEPTH: Record<number, { label: string; desc: string; ideas: number; wait: string; maxTokens: number }> = {
+  1: { label: 'Quick',     desc: '概要',       ideas: 3,  wait: '〜5分',   maxTokens: 1500 },
+  2: { label: 'Standard',  desc: '標準',       ideas: 6,  wait: '〜15分',  maxTokens: 3000 },
+  3: { label: 'Deep',      desc: '詳細',       ideas: 8,  wait: '〜30分',  maxTokens: 5000 },
+  4: { label: 'BCG Grade', desc: 'コンサル級', ideas: 10, wait: '30分+',   maxTokens: 8000 },
+};
+
+/** @deprecated use FREE_DEPTH / PRO_DEPTH */
+export const DEPTH = PRO_DEPTH;
 
 export const EXAMPLE_PRODUCTS: Record<string, string[]> = {
   'product':        ['HR管理SaaS', 'BtoB受発注PF', 'IoT管理ダッシュボード', 'モバイル決済アプリ'],

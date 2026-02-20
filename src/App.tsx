@@ -13,6 +13,7 @@ import {
     Sun,
     Moon,
     AlertCircle,
+    Zap,
 } from 'lucide-react'
 
 // Hooks
@@ -92,6 +93,16 @@ export default function App() {
         setConnStatus({ status: 'idle', msg: '' })
     }
 
+    // API key (persisted in localStorage)
+    const [apiKey, setApiKeyState] = useState(() => localStorage.getItem('userApiKey') || '')
+    const setApiKey = (key: string) => {
+        setApiKeyState(key)
+        localStorage.setItem('userApiKey', key)
+        // Clamp dep to free-mode max when switching to free
+        if (!key.trim().startsWith('sk-') && dep > 3) setDep(3)
+    }
+    const proMode = apiKey.trim().startsWith('sk-')
+
     // Local UI state
     const [showCfg, setShowCfg] = useState(false)
     const [showPrev, setShowPrev] = useState(false)
@@ -107,14 +118,14 @@ export default function App() {
         generate(pn, form, dep, sesLabel, tlStr, issueStr, (res, prompt) => {
             if (stgSettings.autoSave)
                 saveLog(pn, form, res, prompt, cm.label, dep)
-        })
+        }, apiKey)
     }
 
     const handleRefine = () => {
         refine((res: any, text: string) => {
             if (stgSettings.autoSave)
                 saveLog(usedName, form, res, text, cm.label, dep)
-        })
+        }, apiKey)
     }
 
     return (
@@ -136,6 +147,13 @@ export default function App() {
                         </div>
                     </div>
                     <div className='flex items-center gap-1.5'>
+                        {/* Pro mode badge */}
+                        {proMode && (
+                            <div className='flex items-center gap-1 px-2 py-1 rounded-full text-xs border border-blue-200 dark:border-blue-700/50 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300'>
+                                <Zap className='w-3 h-3' />
+                                Pro
+                            </div>
+                        )}
                         {/* Model badge */}
                         <div
                             className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs border ${T.cardFlat} ${T.t2}`}
@@ -201,6 +219,8 @@ export default function App() {
                         connStatus={connStatus}
                         setConnStatus={setConnStatus}
                         runConnTest={runConnTest}
+                        apiKey={apiKey}
+                        setApiKey={setApiKey}
                     />
                 )}
 
@@ -211,6 +231,7 @@ export default function App() {
                         setForm={setForm}
                         dep={dep}
                         setDep={setDep}
+                        proMode={proMode}
                     />
 
                     {/* Error */}
@@ -302,7 +323,7 @@ export default function App() {
                                 {suggestions.map((q, i) => (
                                     <button
                                         key={i}
-                                        onClick={() => deepDive(q)}
+                                        onClick={() => deepDive(q, apiKey)}
                                         disabled={diving}
                                         className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs border ${T.btnGhost} hover:border-blue-300 dark:hover:border-blue-700/50 hover:text-blue-600 dark:hover:text-blue-400 disabled:opacity-30 transition`}
                                     >
