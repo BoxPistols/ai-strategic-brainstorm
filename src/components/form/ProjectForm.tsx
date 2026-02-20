@@ -9,7 +9,7 @@ import {
     ChevronDown,
     ChevronUp,
 } from 'lucide-react'
-import { BrainstormForm, IssueTemplate } from '../../types'
+import { BrainstormForm, IssueTemplate, SessionType } from '../../types'
 import {
     TYPES,
     ISSUE_TPL,
@@ -45,6 +45,22 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
             HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
         >,
     ) => setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }))
+
+    const onSessionTypeChange = (
+        e: React.ChangeEvent<HTMLSelectElement>,
+    ) => {
+        const next = e.target.value as SessionType
+        setForm((prev) => {
+            if (prev.sessionType === next) return prev
+            return {
+                ...prev,
+                sessionType: next,
+                productService: '',
+                teamGoals: '',
+                issues: [{ text: '', detail: '', sub: [] }],
+            }
+        })
+    }
 
     const setIssue = (
         i: number,
@@ -193,7 +209,7 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
                     <select
                         name='sessionType'
                         value={form.sessionType}
-                        onChange={onF}
+                        onChange={onSessionTypeChange}
                         className={T.inp}
                         style={{ backgroundImage: 'none' }}
                     >
