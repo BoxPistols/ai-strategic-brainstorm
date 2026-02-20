@@ -92,6 +92,7 @@ export default function App() {
         setModelId(modelId)
         setResults(results)
         setConnStatus({ status: 'idle', msg: '' })
+        setIsSeedData(true)
     }
 
     // API key (persisted in localStorage)
@@ -108,6 +109,7 @@ export default function App() {
     const [showCfg, setShowCfg] = useState(false)
     const [showPrev, setShowPrev] = useState(false)
     const [showValidation, setShowValidation] = useState(false)
+    const [isSeedData, setIsSeedData] = useState(false)
     const [seedOpen, setSeedOpen] = useState(false)
     const seedTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
     const seedRef = useRef<HTMLDivElement | null>(null)
@@ -139,6 +141,7 @@ export default function App() {
             return
         }
         setShowValidation(false)
+        setIsSeedData(false)
         const pn = getValidProjectName()
         setUsedName(pn)
         generate(pn, form, dep, sesLabel, tlStr, issueStr, (res, prompt) => {
@@ -350,6 +353,7 @@ export default function App() {
                                     <h3 className={`text-xs font-semibold ${T.accentTxt} mb-2.5 flex items-center gap-1.5`}>
                                         <Target className='w-3.5 h-3.5' />
                                         AI 状況分析
+                                        {isSeedData && <span className='ml-auto px-1.5 py-0.5 rounded text-[10px] bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-700/40'>Demo</span>}
                                     </h3>
                                     <RichText text={results.understanding} />
                                 </div>

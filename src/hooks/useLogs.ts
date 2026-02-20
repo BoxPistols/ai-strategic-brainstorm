@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { LogEntry, Settings, BrainstormForm, AIResults } from '../types';
 import { loadLogs, saveLogs, loadSettings, saveSettings } from '../utils/storage';
 
@@ -6,6 +6,12 @@ export const useLogs = () => {
   const [logs, setLogs] = useState<LogEntry[]>(() => loadLogs());
   const [stgSettings, setStgSettings] = useState<Settings>(() => loadSettings());
   const [showLogs, setShowLogs] = useState(false);
+  const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const debouncedSave = useCallback((data: LogEntry[]) => {
+    if (saveTimer.current) clearTimeout(saveTimer.current);
+    saveTimer.current = setTimeout(() => saveLogs(data), 300);
+  }, []);
 
   const updateSettings = useCallback((s: Settings) => {
     setStgSettings(s);
@@ -27,14 +33,14 @@ export const useLogs = () => {
     
     const updated = [entry, ...logs].slice(0, 200);
     setLogs(updated);
-    saveLogs(updated);
-  }, [logs, stgSettings]);
+    debouncedSave(updated);
+  }, [logs, stgSettings, debouncedSave]);
 
   const deleteLog = useCallback((id: string) => {
     const u = logs.filter(l => l.id !== id);
     setLogs(u);
-    saveLogs(u);
-  }, [logs]);
+    debouncedSave(u);
+  }, [logs, debouncedSave]);
 
   const deleteAllLogs = useCallback(() => {
     if (!window.confirm('全ログを削除しますか？')) return;
@@ -50,8 +56,8 @@ export const useLogs = () => {
       .slice(0, 500);
       
     setLogs(unique);
-    saveLogs(unique);
-  }, [logs]);
+    debouncedSave(unique);
+  }, [logs, debouncedSave]);
 
   return {
     logs,
