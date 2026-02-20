@@ -45,11 +45,11 @@ function parseAIJson(raw: string): any {
   return JSON.parse(text);
 }
 import { BrainstormForm, AIResults } from '../types';
-import { callAI, callAIWithKey, testConn } from '../constants/models';
+import { callAI, callAIWithKey, testConn, DEFAULT_MODEL_ID } from '../constants/models';
 import { FREE_DEPTH, PRO_DEPTH } from '../constants/prompts';
 
 export const useAI = () => {
-  const [modelId, setModelId] = useState('gpt-5-nano');
+  const [modelId, setModelId] = useState(DEFAULT_MODEL_ID);
   const [connStatus, setConnStatus] = useState<{ status: 'idle' | 'testing' | 'ok' | 'error', msg: string }>({ status: 'idle', msg: '' });
   
   const [loading, setLoading] = useState(false);

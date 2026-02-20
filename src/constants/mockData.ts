@@ -1,9 +1,10 @@
 import { MockScenario } from '../types';
+import { DEFAULT_MODEL_ID } from './models';
 
 export const MOCK_SCENARIOS: MockScenario[] = [
   {
     label: 'HR SaaS グロース',
-    prov: 'openai', modelId: 'gpt-5-nano', dep: 3,
+    prov: 'openai', modelId: DEFAULT_MODEL_ID, dep: 3,
     form: {
       projectName: 'Vertex-421',
       productService: 'HR管理SaaS（中小企業向け）',
@@ -38,7 +39,7 @@ export const MOCK_SCENARIOS: MockScenario[] = [
   },
   {
     label: 'DX推進 製造業',
-    prov: 'openai', modelId: 'gpt-5-nano', dep: 2,
+    prov: 'openai', modelId: DEFAULT_MODEL_ID, dep: 2,
     form: {
       projectName: 'Obsidian-537',
       productService: '部品メーカー（従業員800名）社内DX',
@@ -69,7 +70,7 @@ export const MOCK_SCENARIOS: MockScenario[] = [
   },
   {
     label: '新規事業 PoC判断',
-    prov: 'openai', modelId: 'gpt-5-nano', dep: 2,
+    prov: 'openai', modelId: DEFAULT_MODEL_ID, dep: 2,
     form: {
       projectName: 'Catalyst-319',
       productService: 'スマート農業IoT（大手食品メーカー新規事業）',
@@ -99,7 +100,7 @@ export const MOCK_SCENARIOS: MockScenario[] = [
   },
   {
     label: 'マーケ GTM戦略',
-    prov: 'openai', modelId: 'gpt-5-nano', dep: 2,
+    prov: 'openai', modelId: DEFAULT_MODEL_ID, dep: 2,
     form: {
       projectName: 'Beacon-472',
       productService: 'BtoB営業支援SaaS（スタートアップ、ARR 3,000万円）',
@@ -129,7 +130,7 @@ export const MOCK_SCENARIOS: MockScenario[] = [
   },
   {
     label: 'オペレーション改革',
-    prov: 'openai', modelId: 'gpt-5-nano', dep: 2,
+    prov: 'openai', modelId: DEFAULT_MODEL_ID, dep: 2,
     form: {
       projectName: 'Fulcrum-651',
       productService: '食品物流企業（従業員500名、拠点12箇所）',
@@ -187,7 +188,7 @@ export const MOCK_SCENARIOS: MockScenario[] = [
   },
   {
     label: '海外展開戦略',
-    prov: 'openai', modelId: 'gpt-5-nano', dep: 2,
+    prov: 'openai', modelId: DEFAULT_MODEL_ID, dep: 2,
     form: {
       projectName: 'Meridian-892',
       productService: 'BtoB SaaS（国内ARR 5億円、東南アジア展開検討）',
@@ -246,7 +247,7 @@ export const MOCK_SCENARIOS: MockScenario[] = [
   },
   {
     label: 'IT人材紹介 事業戦略',
-    prov: 'openai', modelId: 'gpt-5-nano', dep: 2,
+    prov: 'openai', modelId: DEFAULT_MODEL_ID, dep: 2,
     form: {
       projectName: 'Nimbus-447',
       productService: 'ITエンジニア特化の人材紹介エージェント（CA 15名・年間成約300件）',
@@ -277,7 +278,7 @@ export const MOCK_SCENARIOS: MockScenario[] = [
   },
   {
     label: 'CA業務 AI・DX化',
-    prov: 'openai', modelId: 'gpt-5-nano', dep: 2,
+    prov: 'openai', modelId: DEFAULT_MODEL_ID, dep: 2,
     form: {
       projectName: 'Anvil-583',
       productService: 'ITエンジニア向け人材紹介（キャリアアドバイザー業務・Salesforce運用）',
@@ -307,7 +308,7 @@ export const MOCK_SCENARIOS: MockScenario[] = [
   },
   {
     label: '求人メディア AIO転換',
-    prov: 'openai', modelId: 'gpt-5-nano', dep: 2,
+    prov: 'openai', modelId: DEFAULT_MODEL_ID, dep: 2,
     form: {
       projectName: 'Lattice-291',
       productService: 'ITエンジニア向け転職メディア（月間PV 60万・記事数3,500本）',
@@ -367,7 +368,7 @@ export const MOCK_SCENARIOS: MockScenario[] = [
   },
   {
     label: 'SaaS 解約防止',
-    prov: 'openai', modelId: 'gpt-5-nano', dep: 2,
+    prov: 'openai', modelId: DEFAULT_MODEL_ID, dep: 2,
     form: {
       projectName: 'Shield-102',
       productService: '経費精算SaaS（契約社数1,200社）',
@@ -393,7 +394,7 @@ export const MOCK_SCENARIOS: MockScenario[] = [
   },
   {
     label: 'D2Cブランド CX設計',
-    prov: 'openai', modelId: 'gpt-5-nano', dep: 2,
+    prov: 'openai', modelId: DEFAULT_MODEL_ID, dep: 2,
     form: {
       projectName: 'Bloom-415',
       productService: 'D2Cスキンケアブランド（EC売上月8,000万円）',
@@ -419,7 +420,7 @@ export const MOCK_SCENARIOS: MockScenario[] = [
   },
   {
     label: 'フィンテック規制対応',
-    prov: 'openai', modelId: 'gpt-5-nano', dep: 2,
+    prov: 'openai', modelId: DEFAULT_MODEL_ID, dep: 2,
     form: {
       projectName: 'Bastion-776',
       productService: 'クラウド型決済プラットフォーム',
@@ -471,7 +472,7 @@ export const MOCK_SCENARIOS: MockScenario[] = [
   },
   {
     label: 'ECリプレイス計画',
-    prov: 'openai', modelId: 'gpt-5-nano', dep: 2,
+    prov: 'openai', modelId: DEFAULT_MODEL_ID, dep: 2,
     form: {
       projectName: 'Forge-508',
       productService: 'アパレルEC（年商30億円・SKU 12,000点）',
@@ -497,7 +498,7 @@ export const MOCK_SCENARIOS: MockScenario[] = [
   },
   {
     label: '採用ブランディング',
-    prov: 'openai', modelId: 'gpt-5-nano', dep: 2,
+    prov: 'openai', modelId: DEFAULT_MODEL_ID, dep: 2,
     form: {
       projectName: 'Aura-629',
       productService: 'IT企業の採用広報（エンジニア採用年間50名目標）',
@@ -549,7 +550,7 @@ export const MOCK_SCENARIOS: MockScenario[] = [
   },
   {
     label: 'ヘルスケアアプリ',
-    prov: 'openai', modelId: 'gpt-5-nano', dep: 2,
+    prov: 'openai', modelId: DEFAULT_MODEL_ID, dep: 2,
     form: {
       projectName: 'Vitalis-193',
       productService: '法人向け健康管理アプリ（従業員のメンタルヘルス・健診管理）',
@@ -575,7 +576,7 @@ export const MOCK_SCENARIOS: MockScenario[] = [
   },
   {
     label: '物流DX 配車最適化',
-    prov: 'openai', modelId: 'gpt-5-nano', dep: 2,
+    prov: 'openai', modelId: DEFAULT_MODEL_ID, dep: 2,
     form: {
       projectName: 'Route-462',
       productService: '中堅物流企業（車両200台・配送拠点8箇所）',

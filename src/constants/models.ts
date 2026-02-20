@@ -9,8 +9,10 @@ const friendlyError = (status: number, body: string): string => {
   return `API エラー (${status}): ${body.slice(0, 200)}`;
 };
 
+export const DEFAULT_MODEL_ID = 'gpt-5-nano';
+
 export const MODELS: ModelInfo[] = [
-  { id: 'gpt-5-nano',   label: '5 Nano',   t: '最速',    cost: '$'  },
+  { id: DEFAULT_MODEL_ID, label: '5 Nano',   t: '最速',    cost: '$'  },
   { id: 'gpt-5-mini',   label: '5 Mini',   t: 'バランス', cost: '$$' },
   { id: 'gpt-4.1-mini', label: '4.1 Mini', t: 'コスパ',  cost: '$'  },
   { id: 'gpt-4.1-nano', label: '4.1 Nano', t: '最安',    cost: '$'  },
