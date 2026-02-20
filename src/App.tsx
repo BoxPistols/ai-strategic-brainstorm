@@ -15,6 +15,10 @@ import {
     AlertCircle,
     AlertTriangle,
     Zap,
+    PanelLeftClose,
+    Columns2,
+    PanelRightClose,
+    GripVertical,
 } from 'lucide-react'
 
 // Hooks
@@ -36,10 +40,12 @@ import { buildReportMd, dlFile } from './utils/report'
 import { T } from './constants/theme'
 import { MODELS } from './constants/models'
 import { FREE_DEPTH, PRO_DEPTH } from './constants/prompts'
+import { usePanelResize, PRESETS } from './hooks/usePanelResize'
 
 export default function App() {
     // Global hooks
     const { isDark, toggleTheme } = useTheme()
+    const { ratio, applyRatio, startDrag, isDragging, containerRef, activePreset } = usePanelResize()
 
     const {
         logs,
@@ -307,6 +313,23 @@ export default function App() {
                                 </div>
                             )}
                         </div>
+                        {/* Layout presets (desktop only) */}
+                        <div className='hidden lg:flex items-center gap-0.5 p-0.5 rounded-lg border border-slate-200 dark:border-slate-700/60 bg-slate-50 dark:bg-slate-800/40'>
+                            {([
+                                { key: 'leftFocus', icon: PanelLeftClose, title: '左メイン (70:30)' },
+                                { key: 'equal', icon: Columns2, title: '均等 (50:50)' },
+                                { key: 'rightFocus', icon: PanelRightClose, title: '右メイン (30:70)' },
+                            ] as const).map(({ key, icon: Icon, title }) => (
+                                <button
+                                    key={key}
+                                    onClick={() => applyRatio(PRESETS[key])}
+                                    title={title}
+                                    className={`p-1 rounded transition ${activePreset === key ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400' : `${T.t3} hover:${T.t2}`}`}
+                                >
+                                    <Icon className='w-3.5 h-3.5' />
+                                </button>
+                            ))}
+                        </div>
                         <button
                             onClick={toggleTheme}
                             className={`p-1.5 rounded-lg ${T.btnGhost}`}
@@ -351,10 +374,10 @@ export default function App() {
                 )}
 
                 {/* ══════════ 2-col layout (lg+) ══════════ */}
-                <div className='flex flex-col lg:flex-row gap-5 items-start'>
+                <div ref={containerRef} className='flex flex-col lg:flex-row items-start'>
 
                     {/* ── LEFT: Form pane (sticky on desktop) ── */}
-                    <div className='w-full lg:w-[480px] xl:w-[520px] lg:shrink-0 lg:sticky lg:top-4'>
+                    <div className='w-full lg:sticky lg:top-4 lg:shrink-0 lg:pr-2' style={{ flex: `0 0 ${ratio}%` }}>
                         <div className={`${T.card} p-4`}>
                             <ProjectForm
                                 form={form}
@@ -428,8 +451,16 @@ export default function App() {
                         </div>
                     </div>
 
+                    {/* ── Drag handle ── */}
+                    <div
+                        onMouseDown={startDrag}
+                        className={`hidden lg:flex items-center justify-center shrink-0 cursor-col-resize group transition-colors self-stretch ${isDragging ? 'w-1.5 bg-blue-500/40' : 'w-4 hover:bg-blue-500/10'}`}
+                    >
+                        <GripVertical className={`w-3 h-3 transition-colors ${isDragging ? 'text-blue-500' : 'text-slate-300 dark:text-slate-600 group-hover:text-blue-400'}`} />
+                    </div>
+
                     {/* ── RIGHT: Results pane ── */}
-                    <div className='w-full flex-1 min-w-0'>
+                    <div className='w-full lg:pl-2 min-w-0' style={{ flex: 1 }}>
                         {results ? (
                             <div className='space-y-4'>
                                 {/* Understanding */}
