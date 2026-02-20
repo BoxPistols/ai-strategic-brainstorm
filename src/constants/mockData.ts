@@ -38,7 +38,7 @@ export const MOCK_SCENARIOS: MockScenario[] = [
   },
   {
     label: 'DX推進 製造業',
-    prov: 'anthropic', modelId: 'claude-sonnet-4-20250514', dep: 2,
+    prov: 'openai', modelId: 'gpt-5-nano', dep: 2,
     form: {
       projectName: 'Obsidian-537',
       productService: '部品メーカー（従業員800名）社内DX',
@@ -129,7 +129,7 @@ export const MOCK_SCENARIOS: MockScenario[] = [
   },
   {
     label: 'オペレーション改革',
-    prov: 'anthropic', modelId: 'claude-sonnet-4-20250514', dep: 2,
+    prov: 'openai', modelId: 'gpt-5-nano', dep: 2,
     form: {
       projectName: 'Fulcrum-651',
       productService: '食品物流企業（従業員500名、拠点12箇所）',
@@ -187,7 +187,7 @@ export const MOCK_SCENARIOS: MockScenario[] = [
   },
   {
     label: '海外展開戦略',
-    prov: 'anthropic', modelId: 'claude-sonnet-4-20250514', dep: 2,
+    prov: 'openai', modelId: 'gpt-5-nano', dep: 2,
     form: {
       projectName: 'Meridian-892',
       productService: 'BtoB SaaS（国内ARR 5億円、東南アジア展開検討）',
@@ -365,6 +365,266 @@ export const MOCK_SCENARIOS: MockScenario[] = [
       ],
     },
   },
+  {
+    label: 'SaaS 解約防止',
+    prov: 'openai', modelId: 'gpt-5-nano', dep: 2,
+    form: {
+      projectName: 'Shield-102',
+      productService: '経費精算SaaS（契約社数1,200社）',
+      teamGoals: '月次チャーンレート2%→0.8%・NRR 110%達成・NPS +30',
+      sessionType: 'growth',
+      customSession: '',
+      tlMode: 'period', tlStart: '2026-01-01', tlEnd: '2026-06-30', tlDead: '',
+      issues: [
+        { text: '解約率の高止まり', detail: '月次チャーン2%、年換算で顧客の22%が離脱', sub: ['競合の無料プランに流出', 'オンボーディング未完了での早期解約が40%'] },
+        { text: 'エクスパンション不足', detail: 'アップセル率5%、クロスセル実績ほぼゼロ', sub: [] },
+      ],
+    },
+    results: {
+      understanding: `チャーン2%の主因はオンボーディング失敗と競合フリーミアムへの流出。NRR 110%達成にはチャーン削減だけでなくエクスパンション収益の設計が不可欠。`,
+      ideas: [
+        { title: 'ヘルススコア基盤構築', description: 'ログイン頻度・機能利用率・サポート問合せ数からヘルススコアを自動算出。スコア低下時のCS自動介入トリガーで解約予兆の早期検出。', priority: 'High', effort: 'Medium', impact: 'High' },
+        { title: 'オンボーディング完走プログラム', description: '初期設定の7ステップをウィザード化し完走率を30%→70%に改善。Day7・Day14・Day30のチェックポイントでCS介入。', priority: 'High', effort: 'Medium', impact: 'High' },
+        { title: 'セグメント別リテンション施策', description: '企業規模×利用深度のマトリクスでセグメント分けし各コホートに最適な介入を設計。小規模は自動化、中規模以上はCS担当制。', priority: 'High', effort: 'Low', impact: 'High' },
+        { title: 'アップセル導線の自動化', description: '利用量が閾値を超えた企業に自動でアップグレード提案。既存データから「次に必要になる機能」を予測しタイミング最適化。', priority: 'Medium', effort: 'Medium', impact: 'High' },
+        { title: '解約理由の構造化分析', description: '直近6ヶ月の解約企業全件にExitインタビューを実施し原因を5分類に構造化。再発防止策を優先度順に実装。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
+      ],
+    },
+  },
+  {
+    label: 'D2Cブランド CX設計',
+    prov: 'openai', modelId: 'gpt-5-nano', dep: 2,
+    form: {
+      projectName: 'Bloom-415',
+      productService: 'D2Cスキンケアブランド（EC売上月8,000万円）',
+      teamGoals: 'リピート率35%→55%・顧客単価+30%・LTV 24ヶ月化',
+      sessionType: 'cx',
+      customSession: '',
+      tlMode: 'period', tlStart: '2026-02-01', tlEnd: '2026-07-31', tlDead: '',
+      issues: [
+        { text: 'リピート率の低迷', detail: '2回目購入率35%、3回目はさらに半減', sub: ['初回購入者へのフォローが手動メール1通のみ'] },
+        { text: 'パーソナライズ未対応', detail: '全顧客に同じレコメンド、肌質や悩みに応じた提案なし', sub: [] },
+      ],
+    },
+    results: {
+      understanding: `D2Cスキンケアでリピート率35%は業界平均以下。2回目購入への「橋渡し体験」が設計されておらず、初回購入が単発で終わっている。パーソナライズはCX改善の最大レバー。`,
+      ideas: [
+        { title: '肌診断×パーソナライズレコメンド', description: 'LINE連携の肌診断チャットボットで肌質・悩みを取得し、個別最適な商品セットを提案。診断データをCRMに蓄積しリピート提案を自動化。', priority: 'High', effort: 'Medium', impact: 'High' },
+        { title: 'ポストパーチェスジャーニー設計', description: '購入後Day1・Day7・Day14・Day28にステップメール+LINE配信。使い方動画・効果実感の声・次回レコメンドを段階的に提供。', priority: 'High', effort: 'Low', impact: 'High' },
+        { title: 'サブスクリプション導入', description: '定期便モデルを導入し「買い忘れ」による離脱を防止。初回30%OFF+2回目以降15%OFFの価格設計でLTV24ヶ月化を促進。', priority: 'High', effort: 'Medium', impact: 'High' },
+        { title: 'UGCレビュープログラム', description: '購入者にレビュー投稿インセンティブ（次回クーポン）を提供。リアルな口コミが新規CVRとリピート率の両方を改善。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
+        { title: 'VIP顧客プログラム', description: '累計購入額上位10%にVIPステータスを付与。先行販売・限定商品・1on1カウンセリングで顧客単価+30%とLTV最大化を同時達成。', priority: 'Medium', effort: 'Medium', impact: 'High' },
+      ],
+    },
+  },
+  {
+    label: 'フィンテック規制対応',
+    prov: 'openai', modelId: 'gpt-5-nano', dep: 2,
+    form: {
+      projectName: 'Bastion-776',
+      productService: 'クラウド型決済プラットフォーム',
+      teamGoals: 'PCI DSS Level 1取得・API稼働率99.99%・加盟店数3倍',
+      sessionType: 'product',
+      customSession: '',
+      tlMode: 'period', tlStart: '2026-01-01', tlEnd: '2026-12-31', tlDead: '',
+      issues: [
+        { text: 'コンプライアンス対応遅延', detail: 'PCI DSS準拠に必要な改修が12ヶ月計画で4ヶ月遅延中', sub: ['セキュリティ専任エンジニア不足', '監査対応の工数が開発を圧迫'] },
+        { text: '可用性の不安定さ', detail: '月間ダウンタイム累計45分、SLA 99.95%未達', sub: [] },
+      ],
+    },
+    results: {
+      understanding: `決済プラットフォームはコンプライアンスと可用性が事業継続の前提条件。PCI DSS遅延はセキュリティ債務であり最優先。可用性改善はアーキテクチャレベルの対応が必要。`,
+      ideas: [
+        { title: 'PCI DSSギャップ分析と加速プラン', description: '残12要件のギャップ分析を実施し、自動化可能な項目をツール導入で加速。外部QSA（認定セキュリティ評価機関）との週次レビュー体制で遅延を回収。', priority: 'High', effort: 'High', impact: 'High' },
+        { title: 'マルチAZ冗長化', description: 'AWS Multi-AZ構成への移行で単一障害点を排除。Route53ヘルスチェック+自動フェイルオーバーで稼働率99.99%を実現。', priority: 'High', effort: 'High', impact: 'High' },
+        { title: 'セキュリティエンジニア採用強化', description: 'セキュリティ専任2名の採用を最優先に。採用完了まで外部セキュリティコンサルで監査対応をカバー。', priority: 'High', effort: 'Medium', impact: 'Medium' },
+        { title: 'インシデント対応の自動化', description: 'PagerDuty+Runbook自動化で障害検知→初動対応を5分以内に短縮。ポストモーテム文化を定着させ再発防止を構造化。', priority: 'Medium', effort: 'Medium', impact: 'High' },
+        { title: '加盟店オンボーディングの効率化', description: 'API連携ドキュメント+サンドボックス環境を整備し、加盟店の技術検証期間を4週間→1週間に短縮。開発者体験の改善が加盟店獲得の加速要因。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
+      ],
+    },
+  },
+  {
+    label: '教育SaaS PMF検証',
+    prov: 'openai', modelId: 'gpt-5-mini', dep: 2,
+    form: {
+      projectName: 'Ignite-334',
+      productService: '法人向けAI研修プラットフォーム',
+      teamGoals: 'PMFスコア40%以上・有料転換率15%・月次リテンション85%',
+      sessionType: 'innovation',
+      customSession: '',
+      tlMode: 'period', tlStart: '2026-03-01', tlEnd: '2026-08-31', tlDead: '',
+      issues: [
+        { text: 'PMF未達', detail: 'Sean Ellis Test「なくなったら困る」率22%（目標40%）', sub: ['ターゲット企業規模が広すぎてニーズが拡散'] },
+        { text: '有料転換率の低さ', detail: 'フリートライアル→有料転換が8%で目標の半分', sub: [] },
+      ],
+    },
+    results: {
+      understanding: `PMFスコア22%は「nice-to-have」の段階。ターゲット絞り込みとコアバリューの再定義が最優先。広く浅くから狭く深くへの転換が必要。`,
+      ideas: [
+        { title: 'ICP再定義スプリント', description: '既存ユーザーの利用データ+インタビューでPMFスコア40%超のコホートを特定。「従業員100-500名×DX推進部門」等の仮説を2週間で検証。', priority: 'High', effort: 'Low', impact: 'High' },
+        { title: 'コアバリュー再設計', description: '「AI研修」から「AI活用スキルの組織定着」にバリュープロポジションを転換。研修完了率ではなく業務適用率をKPIにし顧客の成果に直結。', priority: 'High', effort: 'Medium', impact: 'High' },
+        { title: 'オンボーディング改善で体験価値を前倒し', description: 'トライアル開始後48時間以内に「AIで業務が楽になった」体験を提供。テンプレート型ワークショップで即座に価値実感を得られる設計。', priority: 'High', effort: 'Medium', impact: 'High' },
+        { title: 'カスタマーサクセス先行投資', description: '有料転換前からCSが伴走する「コンシェルジュ型トライアル」を上位20社に提供。転換率を個別対応で15%→30%に引き上げ成功パターンを型化。', priority: 'Medium', effort: 'Medium', impact: 'High' },
+        { title: '導入事例の量産と横展開', description: 'PMFスコア高コホートの成功事例を3本制作。同業種への横展開で獲得効率を改善。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
+      ],
+    },
+  },
+  {
+    label: 'ECリプレイス計画',
+    prov: 'openai', modelId: 'gpt-5-nano', dep: 2,
+    form: {
+      projectName: 'Forge-508',
+      productService: 'アパレルEC（年商30億円・SKU 12,000点）',
+      teamGoals: 'プラットフォーム刷新・表示速度50%改善・カゴ落ち率15%削減',
+      sessionType: 'dx',
+      customSession: '',
+      tlMode: 'period', tlStart: '2026-04-01', tlEnd: '2027-03-31', tlDead: '',
+      issues: [
+        { text: 'レガシープラットフォーム', detail: '自社EC基盤が10年前の構築で改修コストが年々増加', sub: ['ページ表示3.5秒（目標1.5秒）', 'モバイルCVRがデスクトップの1/3'] },
+        { text: '在庫管理の非効率', detail: '実店舗とECの在庫が分断、欠品と過剰在庫が同時発生', sub: [] },
+      ],
+    },
+    results: {
+      understanding: `年商30億円ECのリプレイスは事業リスクの高いプロジェクト。段階的移行（ストラングラーフィグ）で売上影響を最小化しながら技術刷新を進めるべき。在庫統合はOMS導入が最短解。`,
+      ideas: [
+        { title: 'ヘッドレスコマース移行', description: 'Shopify Plus or commercetoolsでヘッドレス構成に移行。フロントをNext.jsで刷新しLCP 1.5秒以内を実現。バックエンドは段階的に移行しリスクを分散。', priority: 'High', effort: 'High', impact: 'High' },
+        { title: 'OMS（注文管理システム）導入', description: '実店舗+EC+マーケットプレイスの在庫を統合管理するOMSを導入。「店舗在庫のEC販売」で機会損失を解消し売上+10%を見込む。', priority: 'High', effort: 'High', impact: 'High' },
+        { title: 'モバイルUX最優先改善', description: 'モバイルCVRがデスクトップの1/3は改善余地が大きい。商品一覧のスケルトンUI・ワンタップ購入・Apple/Google Pay対応で摩擦を最小化。', priority: 'High', effort: 'Medium', impact: 'High' },
+        { title: 'パーソナライズレコメンド実装', description: '閲覧・購入履歴ベースのAIレコメンドで回遊率と購入点数を改善。SKU 12,000点の強みを活かしクロスセル率+20%。', priority: 'Medium', effort: 'Medium', impact: 'High' },
+        { title: 'カゴ落ちリカバリー自動化', description: 'カゴ落ち後30分・3時間・24時間のステップメール+LINE通知で回収率を改善。決済手段追加（BNPL）でカゴ落ち率-15%。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
+      ],
+    },
+  },
+  {
+    label: '採用ブランディング',
+    prov: 'openai', modelId: 'gpt-5-nano', dep: 2,
+    form: {
+      projectName: 'Aura-629',
+      productService: 'IT企業の採用広報（エンジニア採用年間50名目標）',
+      teamGoals: '応募数2倍・内定承諾率60%→80%・採用単価30%削減',
+      sessionType: 'marketing',
+      customSession: '',
+      tlMode: 'period', tlStart: '2026-01-01', tlEnd: '2026-12-31', tlDead: '',
+      issues: [
+        { text: '応募数の不足', detail: '求人媒体依存度80%、自社チャネルからの応募がほぼゼロ', sub: ['技術ブログ・採用サイトが形骸化'] },
+        { text: '内定辞退率の高さ', detail: '内定承諾率60%、競合オファーに負けるケースが多い', sub: [] },
+      ],
+    },
+    results: {
+      understanding: `エンジニア採用は「選ばれる側」の競争。求人媒体依存からの脱却と、技術ブランドの構築が採用単価削減の本質的な解決策。内定辞退は候補者体験（CX）の設計不足。`,
+      ideas: [
+        { title: '技術ブログ再起動', description: 'エンジニア自身が技術課題と解決策を月4本発信。Zenn・Qiitaとのクロスポスト+SNS展開でエンジニアコミュニティでの認知を獲得。6ヶ月で自然応募比率30%を目標。', priority: 'High', effort: 'Medium', impact: 'High' },
+        { title: '候補者体験の全面設計', description: '応募→面接→内定→入社の各タッチポイントを設計。面接後24時間以内のフィードバック、内定後の1on1メンター制度で承諾率80%を実現。', priority: 'High', effort: 'Low', impact: 'High' },
+        { title: 'リファラル採用プログラム', description: '社員紹介に30万円インセンティブ+紹介プロセスの簡略化。エンジニア同士の信頼ベースで質の高い候補者を獲得。採用単価は媒体比1/3。', priority: 'High', effort: 'Low', impact: 'High' },
+        { title: 'エンジニア向けイベント開催', description: '月1回の技術勉強会・ハッカソンで潜在候補者との接点を構築。イベント参加者の応募転換率は通常の5倍。', priority: 'Medium', effort: 'Medium', impact: 'Medium' },
+        { title: '採用サイトのリニューアル', description: '技術スタック・開発文化・チーム紹介を中心にしたエンジニア特化の採用サイトに刷新。動画インタビュー+GitHub活動の可視化で透明性を担保。', priority: 'Medium', effort: 'Medium', impact: 'Medium' },
+      ],
+    },
+  },
+  {
+    label: 'サブスク価格改定',
+    prov: 'openai', modelId: 'gpt-5-mini', dep: 2,
+    form: {
+      projectName: 'Lever-847',
+      productService: 'プロジェクト管理SaaS（ARR 8億円・契約社数3,000社）',
+      teamGoals: 'ARPU +25%・既存顧客のダウングレード率5%以下・NRR 115%',
+      sessionType: 'growth',
+      customSession: '',
+      tlMode: 'deadline', tlStart: '', tlEnd: '', tlDead: '2026-06-30',
+      issues: [
+        { text: '価格体系の陳腐化', detail: '3年前のプラン設計のまま、機能追加に価格が追いついていない', sub: ['上位プランの差別化が弱く全体の70%が最安プラン'] },
+        { text: 'エクスパンション収益の停滞', detail: 'NRR 102%、アップセル・クロスセルの仕組みなし', sub: [] },
+      ],
+    },
+    results: {
+      understanding: `ARR 8億円でNRR 102%は成長の天井。価格改定は短期的なリスクを伴うが、中期的にはARPU改善が最大の成長レバー。段階的な移行と十分な顧客コミュニケーションが成功の鍵。`,
+      ideas: [
+        { title: 'バリューメトリクス再設計', description: '「ユーザー数課金」から「プロジェクト数×機能ティア」に価格体系を転換。利用価値に連動した課金モデルで自然なエクスパンションを促進。', priority: 'High', effort: 'High', impact: 'High' },
+        { title: 'グランドファザリング戦略', description: '既存顧客は12ヶ月間旧価格を維持し、段階的に新価格へ移行。解約リスクを最小化しながらARPU改善を実現。', priority: 'High', effort: 'Low', impact: 'High' },
+        { title: 'プレミアム機能のゲート化', description: '現在全プランで利用可能な高度機能（ガントチャート・リソース管理・API連携）を上位プランに移動。機能の価値を可視化しアップグレード動機を創出。', priority: 'High', effort: 'Medium', impact: 'High' },
+        { title: '利用量ベースの従量課金追加', description: 'ストレージ・API呼出数・外部連携数に従量課金を追加。ヘビーユーザーから適正な対価を得つつ、小規模利用者の参入障壁を下げる。', priority: 'Medium', effort: 'Medium', impact: 'Medium' },
+        { title: '価格改定コミュニケーション計画', description: '改定90日前の事前告知→60日前のFAQ公開→30日前の個別対応。CSチーム向けの想定Q&A50問を準備し、問い合わせ対応を標準化。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
+      ],
+    },
+  },
+  {
+    label: 'ヘルスケアアプリ',
+    prov: 'openai', modelId: 'gpt-5-nano', dep: 2,
+    form: {
+      projectName: 'Vitalis-193',
+      productService: '法人向け健康管理アプリ（従業員のメンタルヘルス・健診管理）',
+      teamGoals: '導入企業100社・MAU率60%・健診受診率90%達成',
+      sessionType: 'product',
+      customSession: '',
+      tlMode: 'period', tlStart: '2026-01-01', tlEnd: '2026-12-31', tlDead: '',
+      issues: [
+        { text: '利用定着率の低さ', detail: '導入後3ヶ月でMAU率が40%→15%に急落', sub: ['通知が多すぎて無視される', '日常的に使う理由がない'] },
+        { text: '企業の導入決裁が長い', detail: '平均商談期間6ヶ月、人事×IT×経営の3部門承認が必要', sub: [] },
+      ],
+    },
+    results: {
+      understanding: `ヘルスケアアプリの定着は「義務感」ではなく「日常の習慣」に組み込む設計が鍵。健診管理だけでは月1回の利用にしかならず、毎日使う理由の創出が必須。B2Bの長い商談サイクルは導入事例とROI数値で短縮可能。`,
+      ideas: [
+        { title: 'マイクロハビット設計', description: '1日1回30秒の気分チェック+ストレッチ提案で日常利用を習慣化。ゲーミフィケーション（連続記録・チームランキング）でMAU率60%を目標。', priority: 'High', effort: 'Medium', impact: 'High' },
+        { title: 'Slack/Teams連携', description: '既に毎日使うツールにヘルスチェックを埋め込み。朝のスタンドアップ時に30秒コンディション入力でアプリ起動不要の体験を提供。', priority: 'High', effort: 'Medium', impact: 'High' },
+        { title: 'ROI計算ツール提供', description: '「メンタル不調による離職コスト×改善率」で導入ROIを自動計算するWebツールを提供。商談期間6ヶ月→3ヶ月短縮を目標。', priority: 'High', effort: 'Low', impact: 'High' },
+        { title: '産業医連携機能', description: '産業医面談のスケジュール管理+面談記録をアプリに統合。法定義務対応をワンストップ化し企業の管理負荷を削減。', priority: 'Medium', effort: 'Medium', impact: 'Medium' },
+        { title: 'アノニマスレポート機能', description: '組織全体のメンタルヘルス傾向を匿名集計しダッシュボード化。人事が早期にリスクを把握でき、導入企業への提供価値を向上。', priority: 'Medium', effort: 'Medium', impact: 'Medium' },
+      ],
+    },
+  },
+  {
+    label: '物流DX 配車最適化',
+    prov: 'openai', modelId: 'gpt-5-nano', dep: 2,
+    form: {
+      projectName: 'Route-462',
+      productService: '中堅物流企業（車両200台・配送拠点8箇所）',
+      teamGoals: '配車計画自動化率80%・燃料費20%削減・ドライバー残業30%削減',
+      sessionType: 'ops',
+      customSession: '',
+      tlMode: 'period', tlStart: '2026-04-01', tlEnd: '2026-09-30', tlDead: '',
+      issues: [
+        { text: '配車計画の属人化', detail: 'ベテラン2名の経験値に完全依存、休暇時に効率30%低下', sub: ['Excelベースの手動計画で最適化不能'] },
+        { text: '2024年問題対応', detail: 'ドライバー残業上限規制で配送キャパシティ不足が顕在化', sub: [] },
+      ],
+    },
+    results: {
+      understanding: `物流の2024年問題（残業上限規制）は業界全体の構造変化。属人化した配車計画のAI化は「効率改善」ではなく「事業継続」の問題。段階的なデジタル化で現場の抵抗を最小化しつつ、短期でROIを出す設計が重要。`,
+      ideas: [
+        { title: 'AI配車最適化エンジン導入', description: '配送先・時間指定・車両特性・ドライバースキルを考慮したAI配車計画を導入。ベテランの暗黙知をアルゴリズム化し配車計画時間を4時間→30分に短縮。', priority: 'High', effort: 'High', impact: 'High' },
+        { title: 'テレマティクス基盤構築', description: '全200台にGPS+OBDセンサーを設置しリアルタイム位置・燃費・運転行動を可視化。データ基盤を整備しAI配車の入力データを確保。', priority: 'High', effort: 'Medium', impact: 'High' },
+        { title: 'ドライバー勤怠の自動管理', description: 'デジタルタコグラフ連携で残業時間をリアルタイム管理。上限接近アラートで法令違反リスクをゼロに。残業30%削減の定量管理基盤。', priority: 'High', effort: 'Low', impact: 'High' },
+        { title: '拠点間幹線輸送の最適化', description: '8拠点間の幹線輸送ルート・頻度を需要データに基づき再設計。空車回送率を現状25%→10%に改善し燃料費削減。', priority: 'Medium', effort: 'Medium', impact: 'High' },
+        { title: 'エコドライブ研修+インセンティブ', description: '燃費データに基づくドライバー別エコドライブスコアを算出。上位者にインセンティブを付与し全体の燃費10%改善。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
+      ],
+    },
+  },
+  {
+    label: 'ブランド統一 リブランディング',
+    prov: 'openai', modelId: 'gpt-5-mini', dep: 2,
+    form: {
+      projectName: 'Unity-951',
+      productService: 'M&A後の統合企業グループ（3社統合・従業員2,000名）',
+      teamGoals: '統一ブランドガイドライン策定・全社浸透率80%・制作コスト40%削減',
+      sessionType: 'design-system',
+      customSession: '',
+      tlMode: 'period', tlStart: '2026-01-01', tlEnd: '2026-09-30', tlDead: '',
+      issues: [
+        { text: 'ブランド乱立', detail: '3社それぞれのロゴ・カラー・トーンが混在し顧客に混乱', sub: ['営業資料が3パターン存在', 'Webサイトのデザインが統一されていない'] },
+        { text: '制作プロセスの非効率', detail: '各社別々のデザインチーム・ベンダーで重複コストが発生', sub: [] },
+      ],
+    },
+    results: {
+      understanding: `M&A後のブランド統合は「見た目の統一」ではなく「企業アイデンティティの再定義」。3社の強みを活かした新ブランドストーリーが先行し、デザインシステムはその具現化ツール。社内浸透には経営層のコミットメントが不可欠。`,
+      ideas: [
+        { title: 'ブランドストーリーワークショップ', description: '3社の経営陣+キーパーソン15名でブランドパーパスを再定義。「なぜ統合したのか」「顧客にどんな価値を届けるか」を言語化し全社の共通言語を創出。', priority: 'High', effort: 'Low', impact: 'High' },
+        { title: '統一デザインシステム構築', description: 'カラー・タイポグラフィ・コンポーネントをFigma+Storybookで構築。3社のデザイン資産を棚卸しし最良のパターンを統一基盤に採用。', priority: 'High', effort: 'High', impact: 'High' },
+        { title: 'テンプレートライブラリ整備', description: '営業資料・提案書・メール署名・名刺のテンプレートを20種類整備。Canva/Figma共有で「誰でも統一品質」の制作を可能にし制作コスト40%削減。', priority: 'High', effort: 'Medium', impact: 'High' },
+        { title: 'ブランド浸透プログラム', description: '月次のブランドアンバサダー研修+社内ブランドポータルサイトで全社浸透を促進。浸透度を四半期サーベイで計測しPDCA。', priority: 'Medium', effort: 'Medium', impact: 'Medium' },
+        { title: 'デザインベンダー統合', description: '3社別々のベンダーを1社に統合しコスト削減+品質統一。RFP実施でデザインシステム運用に対応可能なパートナーを選定。', priority: 'Medium', effort: 'Low', impact: 'Medium' },
+      ],
+    },
+  },
 ];
 
 export const SEEDS = ['Horizon','Prism','Meridian','Lattice','Helix','Nimbus','Vertex','Cadence','Sextant','Anvil','Loom','Beacon','Torque','Fulcrum','Mosaic','Pinnacle','Obsidian','Catalyst','Epoch','Tessera'];
@@ -374,4 +634,8 @@ export const nextSeed = (): MockScenario => {
   const s = MOCK_SCENARIOS[_seedIdx % MOCK_SCENARIOS.length];
   _seedIdx++;
   return s;
+};
+
+export const getSeedByIndex = (index: number): MockScenario => {
+  return MOCK_SCENARIOS[index % MOCK_SCENARIOS.length];
 };

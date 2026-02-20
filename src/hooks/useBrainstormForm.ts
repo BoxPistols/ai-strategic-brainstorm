@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback } from 'react';
 import { BrainstormForm } from '../types';
-import { nextSeed } from '../constants/mockData';
+import { nextSeed, getSeedByIndex, MOCK_SCENARIOS } from '../constants/mockData';
 import { TYPES, getDeepDiveSuggestions } from '../constants/prompts';
 import { autoN } from '../utils/formatters';
 
@@ -61,16 +61,16 @@ export const useBrainstormForm = () => {
   const [seedModelId, setSeedModelId] = useState<string | null>(null);
   const [seedResults, setSeedResults] = useState<any | null>(null);
 
-  const applySeed = useCallback(() => {
-    const s = nextSeed();
+  const applySeed = useCallback((index?: number) => {
+    const s = index !== undefined ? getSeedByIndex(index) : nextSeed();
     const isPro = (localStorage.getItem('userApiKey') || '').trim().startsWith('sk-');
-    
+
     setSeedModelId(s.modelId);
     setDep(isPro ? s.dep : Math.min(s.dep, 3));
     setForm(s.form);
     setSeedResults(s.results);
     setUsedName(s.form.projectName || autoN(s.form.productService, s.form.teamGoals));
-    
+
     return { modelId: s.modelId, results: s.results };
   }, []);
 
@@ -87,6 +87,7 @@ export const useBrainstormForm = () => {
     issueStr,
     getValidProjectName,
     applySeed,
+    seedScenarios: MOCK_SCENARIOS,
     seedModelId,
     setSeedModelId,
     seedResults,

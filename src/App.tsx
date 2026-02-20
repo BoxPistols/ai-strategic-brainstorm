@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import {
     Target,
     Sparkles,
@@ -64,6 +64,7 @@ export default function App() {
         issueStr,
         getValidProjectName,
         applySeed,
+        seedScenarios,
     } = useBrainstormForm()
 
     const {
@@ -86,8 +87,8 @@ export default function App() {
     } = useAI()
 
     // Handle seed data injection into AI state
-    const handleSeed = () => {
-        const { modelId, results } = applySeed()
+    const handleSeed = (index?: number) => {
+        const { modelId, results } = applySeed(index)
         setModelId(modelId)
         setResults(results)
         setConnStatus({ status: 'idle', msg: '' })
@@ -106,6 +107,8 @@ export default function App() {
     // Local UI state
     const [showCfg, setShowCfg] = useState(false)
     const [showPrev, setShowPrev] = useState(false)
+    const [seedOpen, setSeedOpen] = useState(false)
+    const seedTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
     const cm = MODELS.find((m) => m.id === modelId) || MODELS[0]
     // AI生成サジェストがあればそちらを優先、なければstatic fallback
@@ -178,14 +181,33 @@ export default function App() {
                             )}
                         </div>
 
-                        <button
-                            onClick={handleSeed}
-                            className={`flex items-center gap-1 px-2 py-1.5 rounded-lg border text-xs font-medium bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-700/40 text-amber-700 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/30 transition`}
-                            title='サンプルデータを投入'
+                        <div
+                            className='relative'
+                            onMouseEnter={() => { if (seedTimer.current) clearTimeout(seedTimer.current); setSeedOpen(true); }}
+                            onMouseLeave={() => { seedTimer.current = setTimeout(() => setSeedOpen(false), 200); }}
                         >
-                            <FlaskConical className='w-3.5 h-3.5' />
-                            Seed
-                        </button>
+                            <button
+                                className={`flex items-center gap-1 px-2 py-1.5 rounded-lg border text-xs font-medium bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-700/40 text-amber-700 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/30 transition`}
+                                title='サンプルデータを投入'
+                            >
+                                <FlaskConical className='w-3.5 h-3.5' />
+                                Seed
+                            </button>
+                            {seedOpen && (
+                                <div className='absolute right-0 top-full mt-1 w-64 max-h-80 overflow-y-auto rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-lg z-50'>
+                                    {seedScenarios.map((s, i) => (
+                                        <button
+                                            key={i}
+                                            onClick={() => { handleSeed(i); setSeedOpen(false); }}
+                                            className='w-full text-left px-3 py-2 text-xs hover:bg-amber-50 dark:hover:bg-amber-900/20 border-b border-slate-100 dark:border-slate-700/50 last:border-b-0 transition'
+                                        >
+                                            <div className={`font-medium ${T.t1}`}>{s.label}</div>
+                                            <div className={`${T.t3} truncate`}>{s.form.productService}</div>
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
                         <button
                             onClick={toggleTheme}
                             className={`p-1.5 rounded-lg ${T.btnGhost}`}
