@@ -29,6 +29,7 @@ interface ProjectFormProps {
     dep: number
     setDep: (d: number) => void
     proMode: boolean
+    showValidation?: boolean
 }
 
 export const ProjectForm: React.FC<ProjectFormProps> = ({
@@ -37,6 +38,7 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
     dep,
     setDep,
     proMode,
+    showValidation = false,
 }) => {
     const depTable = proMode ? PRO_DEPTH : FREE_DEPTH
     const [issueTemplateOpen, setIssueTemplateOpen] = useState(false)
@@ -171,7 +173,7 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
                         value={form.productService}
                         onChange={onF}
                         placeholder='プロダクト / サービスカテゴリ名'
-                        className={T.inp}
+                        className={`${T.inp} ${showValidation && !form.productService.trim() ? 'ring-2 ring-red-400 dark:ring-red-500' : ''}`}
                     />
                     {form.productService === '' && (
                         <div className='flex flex-wrap gap-1 mt-1'>
@@ -314,7 +316,7 @@ export const ProjectForm: React.FC<ProjectFormProps> = ({
                         onChange={onF}
                         rows={2}
                         placeholder='定量目標を含めると精度向上（下から選択 or 自由入力）'
-                        className={`${T.inp} resize-none`}
+                        className={`${T.inp} resize-none ${showValidation && !form.teamGoals.trim() ? 'ring-2 ring-red-400 dark:ring-red-500' : ''}`}
                     />
                     <div className='relative mt-1'>
                         <button
