@@ -107,6 +107,7 @@ export default function App() {
     // Local UI state
     const [showCfg, setShowCfg] = useState(false)
     const [showPrev, setShowPrev] = useState(false)
+    const [showValidation, setShowValidation] = useState(false)
     const [seedOpen, setSeedOpen] = useState(false)
     const seedTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
     const seedRef = useRef<HTMLDivElement | null>(null)
@@ -129,6 +130,11 @@ export default function App() {
         : null
 
     const handleGenerate = () => {
+        if (!form.productService.trim() || !form.teamGoals.trim()) {
+            setShowValidation(true)
+            return
+        }
+        setShowValidation(false)
         const pn = getValidProjectName()
         setUsedName(pn)
         generate(pn, form, dep, sesLabel, tlStr, issueStr, (res, prompt) => {
@@ -273,6 +279,7 @@ export default function App() {
                                 dep={dep}
                                 setDep={setDep}
                                 proMode={proMode}
+                                showValidation={showValidation}
                             />
 
                             {/* Error */}
