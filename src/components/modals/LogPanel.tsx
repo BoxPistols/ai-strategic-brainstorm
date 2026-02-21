@@ -11,7 +11,7 @@ interface LogPanelProps {
   onExportAll: () => void;
   onExportAnswers: () => void;
   onExportOne: (log: LogEntry) => void;
-  onImport: (data: any) => void;
+  onImport: (data: unknown) => void;
   settings: AppSettings;
   onSettings: (s: AppSettings) => void;
 }
@@ -41,12 +41,12 @@ export const LogPanel: React.FC<LogPanelProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 bg-black/50 backdrop-blur-sm" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 bg-black/50 backdrop-blur-sm" onClick={onClose} role="dialog" aria-modal="true" aria-labelledby="log-panel-title">
       <div className={`${T.card} w-full max-w-2xl max-h-[90vh] flex flex-col shadow-2xl`} onClick={e => e.stopPropagation()}>
         <div className={`flex items-center justify-between px-4 py-2.5 border-b ${T.div} shrink-0`}>
           <div className="flex items-center gap-2">
             <Database className="w-4 h-4 text-blue-500" />
-            <span className={`text-sm font-semibold ${T.t1}`}>ログ管理</span>
+            <span id="log-panel-title" className={`text-sm font-semibold ${T.t1}`}>ログ管理</span>
             <span className={`text-xs ${T.t3}`}>{logs.length}件</span>
           </div>
           <button onClick={onClose} className={`p-1 rounded-lg ${T.btnGhost}`}>

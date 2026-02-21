@@ -1,5 +1,5 @@
 import { BrainstormForm, AIResults } from '../types';
-import { TYPES, DEPTH } from '../constants/prompts';
+import { TYPES, PRO_DEPTH } from '../constants/prompts';
 import { ll } from './formatters';
 
 export const buildReportMd = (
@@ -19,7 +19,7 @@ export const buildReportMd = (
   md += `- **プロダクト/サービス**: ${form.productService}\n`;
   md += `- **セッション種別**: ${ses}\n`;
   md += `- **タイムライン**: ${tl}\n`;
-  md += `- **分析深度**: ${DEPTH[dep].label}\n`;
+  md += `- **分析深度**: ${PRO_DEPTH[dep]?.label ?? `Lv${dep}`}\n`;
   md += `- **使用モデル**: ${provN} / ${mL}\n`;
   md += `- **生成日時**: ${now}\n\n`;
   

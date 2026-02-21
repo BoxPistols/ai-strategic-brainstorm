@@ -45,6 +45,9 @@ export const PreviewModal: React.FC<PreviewProps> = ({ md, pn, onClose }) => {
         <div
             className='fixed inset-0 z-50 flex items-center justify-center p-3 bg-black/50 backdrop-blur-sm'
             onClick={onClose}
+            role="dialog"
+            aria-modal="true"
+            aria-label="レポートプレビュー"
         >
             <div
                 className={`${T.card} w-full max-w-3xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden`}

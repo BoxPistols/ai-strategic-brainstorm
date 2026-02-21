@@ -1,17 +1,15 @@
 import React, { useState } from 'react'
 import { Wifi, WifiOff, Loader, Key, Zap, HelpCircle, Eye, EyeOff, X } from 'lucide-react'
 import { MODELS, isProMode } from '../../constants/models'
+import { ConnStatus } from '../../types'
 import { T } from '../../constants/theme'
 import { HelpModal } from './HelpModal'
 
 interface SettingsModalProps {
     modelId: string
     setModelId: (id: string) => void
-    connStatus: { status: 'idle' | 'testing' | 'ok' | 'error'; msg: string }
-    setConnStatus: (status: {
-        status: 'idle' | 'testing' | 'ok' | 'error'
-        msg: string
-    }) => void
+    connStatus: ConnStatus
+    setConnStatus: (status: ConnStatus) => void
     runConnTest: (apiKey?: string) => void
     apiKey: string
     setApiKey: (key: string) => void

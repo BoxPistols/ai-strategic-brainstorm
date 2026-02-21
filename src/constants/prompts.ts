@@ -103,9 +103,6 @@ export const PRO_DEPTH: Record<number, { label: string; desc: string; ideas: num
   4: { label: 'High-Class', desc: 'トップティア', ideas: 10, wait: '30分+',   maxTokens: 8000 },
 };
 
-/** @deprecated use FREE_DEPTH / PRO_DEPTH */
-export const DEPTH = PRO_DEPTH;
-
 export const EXAMPLE_PRODUCTS: Record<string, string[]> = {
   'product':        ['HR人材サービス', 'ATS（採用管理システム）', 'サブスク型SaaS', 'マッチングアプリ'],
   'marketing':      ['ITエンジニア向け転職メディア', 'エンジニア採用支援SaaS', 'B2Bマーケティング支援', 'ECサイト（アパレル）'],

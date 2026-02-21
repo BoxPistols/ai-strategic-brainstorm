@@ -69,6 +69,11 @@ export interface ChatMessage {
   content: string;
 }
 
+export interface ConnStatus {
+  status: 'idle' | 'testing' | 'ok' | 'error';
+  msg: string;
+}
+
 export interface ModelInfo {
   id: string;
   label: string;
