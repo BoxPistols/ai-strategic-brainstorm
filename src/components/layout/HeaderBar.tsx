@@ -11,13 +11,14 @@ import {
     Columns2,
     PanelRightClose,
 } from 'lucide-react'
+import { ConnStatus } from '../../types'
 import { T } from '../../constants/theme'
 import { PRESETS } from '../../hooks/usePanelResize'
 
 interface HeaderBarProps {
     proMode: boolean
     modelLabel: string
-    connStatus: { status: 'idle' | 'testing' | 'ok' | 'error'; msg: string }
+    connStatus: ConnStatus
     seedScenarios: Array<{ label: string; form: { productService: string } }>
     onSeed: (index: number) => void
     activePreset?: keyof typeof PRESETS
