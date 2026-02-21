@@ -1,0 +1,10 @@
+{
+  "hooks": {
+    "postToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "command": "npx tsc --noEmit --pretty 2>&1 | head -20"
+      }
+    ]
+  }
+}
