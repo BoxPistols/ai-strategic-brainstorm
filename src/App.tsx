@@ -85,7 +85,7 @@ export default function App() {
             if (e.key === 'Escape') {
                 if (showLogs) setShowLogs(false)
                 else if (showPrev) setShowPrev(false)
-                else if (showHelp) setShowHelp(false)
+                else if (showHelp) { localStorage.setItem('ai-brainstorm-visited', '1'); setShowHelp(false) }
                 else if (showCfg) setShowCfg(false)
             }
         }
