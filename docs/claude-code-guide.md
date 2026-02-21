@@ -864,7 +864,10 @@ X を修正して。制約:
   "hooks": {
     "postToolUse": [{
       "matcher": "Write|Edit",
-      "command": "npx tsc --noEmit --pretty 2>&1 | head -20"
+      "hooks": [{
+        "type": "command",
+        "command": "npx tsc --noEmit --pretty 2>&1 | head -20"
+      }]
     }]
   }
 }
@@ -874,9 +877,10 @@ Edit/Write のたびに TypeScript の型チェックが自動実行される。
 
 ### パーミッション
 
-`.claude/settings.local.json`（個人設定）で以下を許可済み：
-- `npm`, `npx`, `git`, `gh` 系コマンド
-- 各種 WebFetch ドメイン
+`.claude/settings.local.json`（個人設定・Git管理外）で各自が設定：
+- `npm`, `npx`, `git`, `gh` 系コマンドの許可
+- WebFetch ドメインの許可
+- 各開発者が自分の環境に合わせて追加する
 
 ### メモリ
 
