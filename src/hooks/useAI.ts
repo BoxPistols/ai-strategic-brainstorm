@@ -28,7 +28,7 @@ export const useAI = () => {
     }
   }, [modelId]);
 
-  const buildPrompt = (pn: string, form: BrainstormForm, dep: number, sesLabel: string, tlStr: string, issueStr: string, proMode: boolean) => {
+  const buildPrompt = (pn: string, form: BrainstormForm, dep: number, sesLabel: string, issueStr: string, proMode: boolean) => {
     const dc = proMode ? PRO_DEPTH[dep] : FREE_DEPTH[dep];
 
     // ── セッションタイプ別 役割定義（Prompt74jpから抽出・合成） ──
@@ -137,7 +137,7 @@ ${rd.lens}
 ${hrContext ? `\n${hrContext}` : ''}
 【分析対象】
 プロジェクト: ${pn} / プロダクト・サービス: ${form.productService}
-タイムライン: ${tlStr} / チーム目標: ${form.teamGoals}${issueStr ? `\n現状課題: ${issueStr}` : ''}
+チーム目標: ${form.teamGoals}${issueStr ? `\n現状課題: ${issueStr}` : ''}
 セッション: ${sesLabel} / 分析深度: ${dc.label}
 
 【出力形式】JSONのみ・コードブロック不要:
@@ -155,7 +155,6 @@ JSONのみ回答:
     form: BrainstormForm,
     dep: number,
     sesLabel: string,
-    tlStr: string,
     issueStr: string,
     onSuccess: (res: AIResults, prompt: string) => void,
     apiKey = '',
@@ -175,7 +174,7 @@ JSONのみ回答:
     setReviewText('');
     setHist([]);
 
-    const prompt = buildPrompt(pn, form, dep, sesLabel, tlStr, issueStr, proMode);
+    const prompt = buildPrompt(pn, form, dep, sesLabel, issueStr, proMode);
 
     try {
       const msg: ChatMessage = { role: 'user', content: prompt };

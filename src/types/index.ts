@@ -17,10 +17,6 @@ export interface BrainstormForm {
   teamGoals: string;
   sessionType: SessionType;
   customSession: string;
-  tlMode: 'period' | 'deadline';
-  tlStart: string;
-  tlEnd: string;
-  tlDead: string;
   issues: Issue[];
 }
 

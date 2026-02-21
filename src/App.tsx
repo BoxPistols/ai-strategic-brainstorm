@@ -35,7 +35,7 @@ export default function App() {
 
     const {
         form, setForm, dep, setDep, usedName, setUsedName,
-        sesLabel, tlStr, suggestions, issueStr,
+        sesLabel, suggestions, issueStr,
         getValidProjectName, applySeed, seedScenarios,
     } = useBrainstormForm()
 
@@ -152,7 +152,7 @@ export default function App() {
         setIsSeedData(false)
         const pn = getValidProjectName()
         setUsedName(pn)
-        generate(pn, form, dep, sesLabel, tlStr, issueStr, (res, prompt) => {
+        generate(pn, form, dep, sesLabel, issueStr, (res, prompt) => {
             if (stgSettings.autoSave) saveLog(pn, form, res, prompt, cm.label, dep)
         }, apiKey)
     }

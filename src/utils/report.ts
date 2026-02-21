@@ -12,13 +12,10 @@ export const buildReportMd = (
 ): string => {
   const now = new Date().toLocaleString('ja-JP');
   const ses = form.sessionType === 'other' ? form.customSession : TYPES[form.sessionType];
-  const tl = form.tlMode === 'period' ? `${form.tlStart || '?'} 〜 ${form.tlEnd || '?'}` : (form.tlDead || '未指定');
-  
   let md = `# AI Strategic Brainstorm Report\n\n`;
   md += `- **プロジェクト**: ${pn}\n`;
   md += `- **プロダクト/サービス**: ${form.productService}\n`;
   md += `- **セッション種別**: ${ses}\n`;
-  md += `- **タイムライン**: ${tl}\n`;
   md += `- **分析深度**: ${PRO_DEPTH[dep]?.label ?? `Lv${dep}`}\n`;
   md += `- **使用モデル**: ${provN} / ${mL}\n`;
   md += `- **生成日時**: ${now}\n\n`;
