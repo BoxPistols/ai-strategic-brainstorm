@@ -7,7 +7,7 @@
 1. `git status` と `git diff --staged` で変更内容を確認する
 2. 変更内容を要約した conventional commit メッセージを作成する（feat:, fix:, refactor: 等）
 3. mainブランチにいる場合はブランチ作成を促す（mainへの直接pushは禁止）
-4. `git add` で関連ファイルをステージングする（git add -A は使わない）
+4. `git add` で関連ファイルを個別にステージングする（`git add -A` は .env や不要ファイルの誤コミット防止のため使わない）
 5. コミットを実行する
 6. リモートブランチにpushする
 7. このブランチにオープンPRがあれば、PR説明文を最新の変更に合わせて更新する

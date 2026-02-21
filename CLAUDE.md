@@ -23,8 +23,9 @@
 
 ## Code Quality
 
-- コード変更後は `npx tsc --noEmit` で型チェックを実行する
-- テストがある場合は `npm test` で確認する
+- ビルド確認: `npm run build`
+- 型チェック: `npx tsc --noEmit`（Hooks で自動実行済み）
+- テスト: `npm test`
 - UI/スタイリングの修正時は正しいコンポーネントとCSS詳細度を確認してから変更する
 
 ## Debugging
