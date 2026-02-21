@@ -18,7 +18,7 @@ import { SettingsModal } from './components/modals/SettingsModal'
 import { AppHelpModal } from './components/modals/AppHelpModal'
 
 // Utils & Constants
-import { buildReportMd, dlFile } from './utils/report'
+import { buildReportMd, buildReportCsv, mdToTxt, printReport, dlFile } from './utils/report'
 import { T } from './constants/theme'
 import { MODELS, isProMode } from './constants/models'
 import { FREE_DEPTH, PRO_DEPTH } from './constants/prompts'
@@ -294,9 +294,18 @@ export default function App() {
                             refineProgress={refineProgress}
                             onRefine={handleRefine}
                             onShowPreview={results ? () => setShowPrev(true) : undefined}
-                            onQuickDownload={report ? () => {
+                            onDownload={report && results ? (fmt) => {
                                 const ts = new Date().toISOString().slice(0, 16).replace(/[T:]/g, '-')
-                                dlFile(report, `${usedName}_${ts}.md`, 'text/markdown')
+                                switch (fmt) {
+                                    case 'md':
+                                        dlFile(report, `${usedName}_${ts}.md`, 'text/markdown'); break
+                                    case 'txt':
+                                        dlFile(mdToTxt(report), `${usedName}_${ts}.txt`, 'text/plain'); break
+                                    case 'csv':
+                                        dlFile(buildReportCsv(usedName, form, results, cm.label, dep), `${usedName}_${ts}.csv`, 'text/csv'); break
+                                    case 'pdf':
+                                        printReport(mdToTxt(report), usedName); break
+                                }
                             } : undefined}
                         />
                     </div>

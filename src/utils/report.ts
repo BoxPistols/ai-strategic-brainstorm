@@ -69,6 +69,52 @@ export const buildReportMd = (
   return md;
 };
 
+export const mdToTxt = (md: string): string =>
+  md
+    .replace(/^# (.*$)/gm, '$1')
+    .replace(/^## (.*$)/gm, '■ $1')
+    .replace(/^### (.*$)/gm, '  $1')
+    .replace(/\*\*(.*?)\*\*/g, '$1')
+    .replace(/^- (.*$)/gm, '・$1')
+    .replace(/\|/g, ' ')
+    .replace(/[-]{3,}/g, '────────────────────')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+
+export const buildReportCsv = (
+  pn: string,
+  form: BrainstormForm,
+  results: AIResults,
+  mL: string,
+  dep: number
+): string => {
+  const esc = (s: string) => `"${s.replace(/"/g, '""')}"`;
+  const ses = form.sessionType === 'other' ? form.customSession : TYPES[form.sessionType];
+  const rows: string[] = [];
+  rows.push('No,タイトル,説明,優先度,工数,インパクト');
+  results.ideas.forEach((d, i) => {
+    rows.push(`${i + 1},${esc(d.title)},${esc(d.description)},${d.priority},${d.effort},${d.impact}`);
+  });
+  rows.push('');
+  rows.push(`プロジェクト,${esc(pn)}`);
+  rows.push(`プロダクト/サービス,${esc(form.productService)}`);
+  rows.push(`セッション種別,${esc(ses)}`);
+  rows.push(`分析深度,${PRO_DEPTH[dep]?.label ?? `Lv${dep}`}`);
+  rows.push(`使用モデル,${esc(mL)}`);
+  rows.push(`生成日時,${new Date().toLocaleString('ja-JP')}`);
+  return rows.join('\n');
+};
+
+export const printReport = (txt: string, pn: string) => {
+  const w = window.open('', '_blank');
+  if (!w) return;
+  w.document.write(
+    `<!DOCTYPE html><html><head><meta charset="utf-8"><title>${pn}</title><style>body{font-family:-apple-system,'Hiragino Sans',sans-serif;max-width:780px;margin:32px auto;padding:0 20px;color:#1a1a1a;line-height:1.8;font-size:13px}pre{white-space:pre-wrap;font-family:inherit}@media print{body{margin:16px}}</style></head><body><pre>${txt}</pre></body></html>`,
+  );
+  w.document.close();
+  setTimeout(() => w.print(), 300);
+};
+
 export const dlFile = (c: string, fn: string, mime: string) => {
   const b = new Blob(['\uFEFF' + c], { type: `${mime};charset=utf-8` });
   const u = URL.createObjectURL(b);
