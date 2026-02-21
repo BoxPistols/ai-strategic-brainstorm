@@ -66,7 +66,7 @@ export default function App() {
 
     // Local UI state
     const [showCfg, setShowCfg] = useState(false)
-    const [showHelp, setShowHelp] = useState(false)
+    const [showHelp, setShowHelp] = useState(() => !localStorage.getItem('ai-brainstorm-visited'))
     const [showPrev, setShowPrev] = useState(false)
     const [showValidation, setShowValidation] = useState(false)
     const [isSeedData, setIsSeedData] = useState(false)
@@ -313,7 +313,7 @@ export default function App() {
             </div>
 
             {/* Modals */}
-            {showHelp && <AppHelpModal onClose={() => setShowHelp(false)} />}
+            {showHelp && <AppHelpModal onClose={() => { localStorage.setItem('ai-brainstorm-visited', '1'); setShowHelp(false) }} />}
             {showPrev && report && (
                 <PreviewModal md={report} pn={usedName} onClose={() => setShowPrev(false)} />
             )}
