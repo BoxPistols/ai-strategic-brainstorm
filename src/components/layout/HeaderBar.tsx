@@ -33,6 +33,8 @@ interface HeaderBarProps {
     onShowLogs: () => void
     showCfg: boolean
     onToggleCfg: () => void
+    lastUsedModel?: string | null
+    freeRemaining?: number | null
 }
 
 export const HeaderBar: React.FC<HeaderBarProps> = ({
@@ -50,6 +52,8 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
     onShowLogs,
     showCfg,
     onToggleCfg,
+    lastUsedModel,
+    freeRemaining,
 }) => {
     const [seedOpen, setSeedOpen] = useState(false)
     const seedTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -99,8 +103,14 @@ export const HeaderBar: React.FC<HeaderBarProps> = ({
                         Pro
                     </div>
                 )}
-                <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs border ${T.cardFlat} ${T.t2}`} title={`使用モデル: ${modelLabel}`}>
+                <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs border ${T.cardFlat} ${T.t2}`} title={`使用モデル: ${modelLabel}${lastUsedModel ? ` → ${lastUsedModel}` : ''}`}>
                     <span className={T.accentTxt}>◆</span> {modelLabel}
+                    {modelLabel === 'Auto' && lastUsedModel && (
+                        <span className={`${T.t3} text-[10px]`}>→ {lastUsedModel.replace('gpt-', '')}</span>
+                    )}
+                    {!proMode && freeRemaining != null && (
+                        <span className={`${T.t3} text-[10px]`}>{freeRemaining}回</span>
+                    )}
                     {connStatus.status === 'ok' && (
                         <span className='w-1.5 h-1.5 rounded-full bg-emerald-500' title={connStatus.msg} role='status' aria-label='接続正常' />
                     )}
