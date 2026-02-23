@@ -189,7 +189,7 @@ JSONのみ回答:
       onSuccess(parsed, prompt);
     } catch (e: unknown) {
       console.error(e);
-      setError(`生成失敗: ${e instanceof Error ? e.message : String(e)}。フォールバック結果を表示しています。`);
+      setError(`生成に失敗しました: ${e instanceof Error ? e.message : String(e)}\n代わりにテンプレート結果を表示しています。⚙設定からAPIキーを登録するとAI分析が利用できます。`);
       const issues = form.issues.filter(x => x.text.trim()).map(x => x.text).join('、') || '未指定';
       setResults({
         understanding: `「${form.productService}」の${sesLabel}セッション（目標: ${form.teamGoals}）。現状課題「${issues}」を踏まえた戦略提案。APIとの通信に失敗したためフォールバック結果を表示しています。`,
@@ -291,7 +291,7 @@ ${pastRefinements ? `\n【過去のブラッシュアップ履歴】\n${pastRefi
 
       onSuccess(newResults, reviewText);
     } catch (e: unknown) {
-      setError(`改善失敗: ${e instanceof Error ? e.message : String(e)}`);
+      setError(`ブラッシュアップに失敗しました: ${e instanceof Error ? e.message : String(e)}\nレビュー内容を短くするか、しばらく待ってから再度お試しください。`);
     } finally {
       setRefining(false);
     }
@@ -443,7 +443,7 @@ ${pastDives ? `\n【過去の深掘り履歴】\n${pastDives}` : ''}
         const fallback = buildFallbackDeepDive(q, currentResults);
         setResults(p => p ? ({ ...p, deepDives: [...(p.deepDives || []), { question: q, answer: fallback }] }) : p);
       } catch {
-        setError(`深掘り失敗: ${e instanceof Error ? e.message : '不明なエラー'}`);
+        setError(`深掘りに失敗しました: ${e instanceof Error ? e.message : '不明なエラー'}\n質問を短くするか、しばらく待ってから再度お試しください。`);
       }
     } finally {
       setDiving(false);
@@ -484,7 +484,7 @@ ${pastDives ? `\n【過去の深掘り履歴】\n${pastDives}` : ''}
 
       // JSON配列を抽出・パース
       const jsonMatch = raw.match(/\[[\s\S]*\]/);
-      if (!jsonMatch) throw new Error('AIが有効なJSONを返しませんでした');
+      if (!jsonMatch) throw new Error('AIの回答を処理できませんでした。もう一度お試しください。');
       const subIdeas = JSON.parse(jsonMatch[0]) as Idea[];
       
       setResults(p => {
@@ -494,7 +494,7 @@ ${pastDives ? `\n【過去の深掘り履歴】\n${pastDives}` : ''}
         return { ...p, ideas: nextIdeas };
       });
     } catch (e: unknown) {
-      setError(`カード深掘り失敗: ${e instanceof Error ? e.message : String(e)}`);
+      setError(`カードの深掘りに失敗しました: ${e instanceof Error ? e.message : String(e)}`);
     } finally {
       setDrillingDownId(null);
     }

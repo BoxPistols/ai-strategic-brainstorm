@@ -18,6 +18,7 @@ import { SettingsModal } from './components/modals/SettingsModal'
 import { AppHelpModal } from './components/modals/AppHelpModal'
 import { AppTour } from './components/tour/AppTour'
 import { SupportWidget } from './components/support/SupportWidget'
+import { WelcomeVideoModal } from './components/remotion/WelcomeVideoModal'
 
 // Utils & Constants
 import { buildReportMd, buildReportCsv, mdToTxt, printReport, dlFile, downloadPdf, downloadPptx } from './utils/report'
@@ -69,7 +70,8 @@ export default function App() {
     // Local UI state
     const [showCfg, setShowCfg] = useState(false)
     const [showHelp, setShowHelp] = useState(false)
-    const [showTour, setShowTour] = useState(() => !localStorage.getItem('ai-brainstorm-visited'))
+    const [showWelcomeVideo, setShowWelcomeVideo] = useState(() => !localStorage.getItem('ai-brainstorm-welcomed'))
+    const [showTour, setShowTour] = useState(false)
     const [showPrev, setShowPrev] = useState(false)
     const [showValidation, setShowValidation] = useState(false)
     const [isSeedData, setIsSeedData] = useState(false)
@@ -324,7 +326,13 @@ export default function App() {
                 </div>
             </div>
 
-            {/* Tour & Modals */}
+            {/* Welcome Video & Tour & Modals */}
+            {showWelcomeVideo && (
+                <WelcomeVideoModal
+                    onClose={() => { localStorage.setItem('ai-brainstorm-welcomed', '1'); setShowWelcomeVideo(false) }}
+                    onStartTour={() => { localStorage.setItem('ai-brainstorm-welcomed', '1'); setShowWelcomeVideo(false); setShowTour(true) }}
+                />
+            )}
             <AppTour enabled={showTour} onExit={() => { localStorage.setItem('ai-brainstorm-visited', '1'); setShowTour(false) }} />
             {showHelp && <AppHelpModal onClose={() => setShowHelp(false)} />}
             {showPrev && report && (

@@ -1,14 +1,23 @@
 # AI Strategic Brainstorm
 
-> Expert-grade strategic ideation tool powered by multi-provider AI APIs
+> 戦略会議の質を、AIで底上げする。
+
+マルチAI対応の構造化ブレインストーミングツール
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![React](https://img.shields.io/badge/React-18+-61DAFB.svg)
 ![TypeScript Ready](https://img.shields.io/badge/Vite-5+-646CFF.svg)
+![CI](https://github.com/BoxPistols/ai-strategic-brainstorm/actions/workflows/ci.yml/badge.svg)
 
-## Overview
+## このツールについて
 
-BCG/McKinsey/Accenture級の戦略コンサルティング品質で、プロジェクトの課題分析・アイデア生成・深掘りリサーチを行うAIブレインストーミングツールです。
+事業課題の分析や新規施策の検討を進めるとき、「情報は集めたが、どこから手をつけるか決められない」「チームで議論しても、いつも同じ視点に偏る」という場面は少なくありません。
+
+AI Strategic Brainstormは、課題をツリー構造で分解し、複数のAI（Claude / GPT / Gemini）に多角的な分析とアイデア生成を依頼できるWebツールです。
+
+分析の深度を4段階で調整できるため、クイックな壁打ちから本格的な戦略検討まで、目的に応じた使い方ができます。
+
+戦略コンサルタントに依頼するほどではないが、チーム内の議論だけでは視野が足りない——そのギャップを埋めることを目指しています。
 
 ### Key Features
 
@@ -49,7 +58,7 @@ BCG/McKinsey/Accenture級の戦略コンサルティング品質で、プロジ�
 ### Installation
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/ai-strategic-brainstorm.git
+git clone https://github.com/BoxPistols/ai-strategic-brainstorm.git
 cd ai-strategic-brainstorm
 npm install
 ```
@@ -94,15 +103,34 @@ ai-strategic-brainstorm/
 ├── public/
 │   └── favicon.svg
 ├── src/
-│   ├── App.jsx            # Main application component
-│   ├── main.jsx           # Entry point
-│   └── index.css          # Tailwind imports
+│   ├── __tests__/             # テスト
+│   │   └── parseAIJson.test.ts
+│   ├── components/
+│   │   ├── form/              # 入力フォーム（ProjectForm, IssueRow）
+│   │   ├── layout/            # レイアウト（HeaderBar, ResultsPane）
+│   │   ├── modals/            # モーダル（Settings, Log, Preview, Help）
+│   │   ├── results/           # 結果表示（ResultCard, FeasibilityBar, RichText）
+│   │   ├── support/           # サポートウィジェット
+│   │   ├── tour/              # アプリツアー
+│   │   └── ErrorBoundary.tsx
+│   ├── constants/             # 定数・プロンプト・モデル定義・テーマ
+│   ├── hooks/                 # カスタム Hooks（useAI, useBrainstormForm 等）
+│   ├── styles/                # カスタム CSS
+│   ├── types/                 # TypeScript 型定義
+│   ├── utils/                 # ユーティリティ（JSON パース、レポート生成等）
+│   ├── App.tsx                # メインアプリケーションコンポーネント
+│   ├── main.tsx               # エントリポイント
+│   └── index.css              # Tailwind インポート
+├── api/                       # Vercel Serverless Functions
+├── docs/                      # 仕様・設計ドキュメント
 ├── index.html
 ├── package.json
-├── vite.config.js
+├── tsconfig.json
+├── tsconfig.node.json
+├── vite.config.ts
 ├── tailwind.config.js
 ├── postcss.config.js
-├── .gitignore
+├── vercel.json
 ├── LICENSE
 └── README.md
 ```

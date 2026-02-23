@@ -4,12 +4,12 @@ import { ModelInfo, ChatMessage } from '../types';
 export const isProMode = (apiKey: string): boolean => apiKey.trim().startsWith('sk-');
 
 const friendlyError = (status: number, body: string): string => {
-  if (status === 429) return 'APIレート制限に達しました。しばらく待ってから再試行してください。';
-  if (status === 401) return 'APIキーが無効です。設定を確認してください。';
-  if (status === 403) return 'APIアクセスが拒否されました。キーの権限を確認してください。';
-  if (status === 404) return `モデルが見つかりません。${body.slice(0, 100)}`;
-  if (status === 500 || status === 502 || status === 503) return 'APIサーバーが一時的に利用できません。しばらく待ってから再試行してください。';
-  return `API エラー (${status}): ${body.slice(0, 200)}`;
+  if (status === 429) return 'リクエストが集中しています。1分ほど待ってから「生成」ボタンを再度押してください。';
+  if (status === 401) return 'APIキーが正しくありません。右上の⚙設定ボタンからキーを確認・再入力してください。';
+  if (status === 403) return 'APIキーの権限が不足しています。右上の⚙設定ボタンからキーを確認してください。';
+  if (status === 404) return `選択中のAIモデルが利用できません。右上の⚙設定から別のモデルを選んでください。${body ? `（${body.slice(0, 80)}）` : ''}`;
+  if (status === 500 || status === 502 || status === 503) return 'AIサービスが一時的に混み合っています。1〜2分後に再度お試しください。';
+  return `通信エラーが発生しました。インターネット接続を確認し、再度お試しください。（${status}）`;
 };
 
 export const DEFAULT_MODEL_ID = 'gpt-5-nano';
@@ -56,7 +56,7 @@ const callAPI = async (modelId: string, msgs: ChatMessage[], maxTokens: number, 
   const data = await r.json();
   const content = data.choices?.[0]?.message?.content || '';
   if (!content && data.choices?.[0]?.finish_reason === 'length') {
-    throw new Error('回答が長すぎてトークン上限に達しました。分析深度を下げるか、入力を簡潔にしてください。');
+    throw new Error('AIの回答が長くなりすぎました。左パネルの「分析深度」スライダーを1段下げるか、課題・目標の入力を短くしてから再度お試しください。');
   }
   return content;
 };
