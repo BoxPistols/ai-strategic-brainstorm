@@ -47,7 +47,24 @@ export const useAI = () => {
   const [costWarning, setCostWarning] = useState<BudgetWarning | null>(null);
   const [sessionCost, setSessionCost] = useState(0);
   const [lastUsedModel, setLastUsedModel] = useState<string | null>(null);
-  const [freeRemaining, setFreeRemaining] = useState<{ remaining: number; limit: number; resetAt?: number } | null>(null);
+  const [freeRemaining, setFreeRemainingState] = useState<{ remaining: number; limit: number; resetAt?: number } | null>(() => {
+    try {
+      const saved = localStorage.getItem('ai-brainstorm-rate-limit');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        // resetAt を過ぎていたらリセット
+        if (parsed.resetAt && Date.now() > parsed.resetAt) {
+          return { remaining: parsed.limit || 50, limit: parsed.limit || 50 };
+        }
+        return parsed;
+      }
+    } catch { /* ignore */ }
+    return { remaining: 50, limit: 50 };
+  });
+  const setFreeRemaining = useCallback((rl: { remaining: number; limit: number; resetAt?: number }) => {
+    setFreeRemainingState(rl);
+    try { localStorage.setItem('ai-brainstorm-rate-limit', JSON.stringify(rl)); } catch { /* ignore */ }
+  }, []);
 
   const runConnTest = useCallback(async (apiKey = '') => {
     setConnStatus({ status: 'testing', msg: '' });
