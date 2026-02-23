@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
-import { Wifi, WifiOff, Loader, Key, Zap, HelpCircle, Eye, EyeOff, X } from 'lucide-react'
+import { Wifi, WifiOff, Loader, Key, Zap, HelpCircle, Eye, EyeOff, X, Trash2 } from 'lucide-react'
 import { MODELS, isProMode } from '../../constants/models'
 import { ConnStatus } from '../../types'
 import { T } from '../../constants/theme'
 import { HelpModal } from './HelpModal'
+import { clearAllData } from '../../utils/storage'
 
 interface SettingsModalProps {
     modelId: string
@@ -177,6 +178,17 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                     <p className={`ml-auto text-xs ${T.t3}`}>
                         {proMode ? 'OpenAI直接接続' : 'サーバープロキシ経由'}
                     </p>
+                </div>
+
+                {/* Reset Data */}
+                <div className={`pt-3 mt-1 border-t ${T.div} flex justify-end`}>
+                    <button
+                        onClick={clearAllData}
+                        className='flex items-center gap-1.5 px-2 py-1 text-[10px] text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-md transition border border-transparent hover:border-red-200 dark:hover:border-red-900/50'
+                    >
+                        <Trash2 className='w-3 h-3' />
+                        サイトデータを初期化
+                    </button>
                 </div>
             </div>
 

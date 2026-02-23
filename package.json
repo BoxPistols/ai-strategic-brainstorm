@@ -11,7 +11,9 @@
     "build": "vite build",
     "preview": "vite preview",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "clean": "rm -rf dist node_modules/.vite",
+    "clean:all": "rm -rf dist node_modules/.vite node_modules/.cache"
   },
   "dependencies": {
     "@remotion/cli": "^4.0.427",
