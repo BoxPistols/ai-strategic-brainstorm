@@ -346,7 +346,7 @@ export default function App() {
             {showHelp && (
                 <AppHelpModal
                     onClose={() => setShowHelp(false)}
-                    onStartTour={() => setShowTour(true)}
+                    onStartTour={() => requestAnimationFrame(() => setShowTour(true))}
                     onStartVideo={() => setShowWelcomeVideo(true)}
                 />
             )}

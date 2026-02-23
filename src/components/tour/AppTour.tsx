@@ -1,4 +1,5 @@
 import { Steps } from 'intro.js-react'
+import { useMemo } from 'react'
 import 'intro.js/introjs.css'
 
 interface AppTourProps {
@@ -6,7 +7,7 @@ interface AppTourProps {
     onExit: () => void
 }
 
-const STEPS = [
+const ALL_STEPS = [
     {
         element: '[data-tour="session-type"]',
         title: 'セッション種別',
@@ -51,22 +52,35 @@ const STEPS = [
     },
 ]
 
-export const AppTour: React.FC<AppTourProps> = ({ enabled, onExit }) => (
-    <Steps
-        enabled={enabled}
-        steps={STEPS}
-        initialStep={0}
-        onExit={onExit}
-        options={{
-            nextLabel: '次へ',
-            prevLabel: '戻る',
-            doneLabel: '完了',
-            skipLabel: 'スキップ',
-            showProgress: true,
-            showBullets: true,
-            exitOnOverlayClick: true,
-            scrollToElement: true,
-            disableInteraction: false,
-        }}
-    />
-)
+export const AppTour: React.FC<AppTourProps> = ({ enabled, onExit }) => {
+    // DOM上に存在する要素のステップのみ渡す（存在しない要素でクラッシュを防ぐ）
+    const steps = useMemo(
+        () => enabled ? ALL_STEPS.filter(s => document.querySelector(s.element)) : ALL_STEPS,
+        [enabled],
+    )
+
+    if (enabled && steps.length === 0) {
+        onExit()
+        return null
+    }
+
+    return (
+        <Steps
+            enabled={enabled}
+            steps={steps}
+            initialStep={0}
+            onExit={onExit}
+            options={{
+                nextLabel: '次へ',
+                prevLabel: '戻る',
+                doneLabel: '完了',
+                skipLabel: 'スキップ',
+                showProgress: true,
+                showBullets: true,
+                exitOnOverlayClick: true,
+                scrollToElement: true,
+                disableInteraction: false,
+            }}
+        />
+    )
+}
