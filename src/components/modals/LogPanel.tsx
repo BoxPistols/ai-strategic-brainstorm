@@ -11,7 +11,7 @@ interface LogPanelProps {
   onExportAll: () => void;
   onExportAnswers: () => void;
   onExportOne: (log: LogEntry) => void;
-  onImport: (data: unknown) => void;
+  onImport: (data: unknown) => number;
   settings: AppSettings;
   onSettings: (s: AppSettings) => void;
 }
@@ -30,10 +30,15 @@ export const LogPanel: React.FC<LogPanelProps> = ({
     r.onload = (ev) => {
       try {
         if (ev.target?.result) {
-          onImport(JSON.parse(ev.target.result as string));
+          const count = onImport(JSON.parse(ev.target.result as string));
+          if (count > 0) {
+            alert(`${count}件のログをインポートしました`);
+          } else {
+            alert('有効なログデータが見つかりませんでした。ファイル形式を確認してください。');
+          }
         }
       } catch {
-        alert('Invalid JSON');
+        alert('JSONの読み込みに失敗しました。ファイル形式を確認してください。');
       }
     };
     r.readAsText(f);

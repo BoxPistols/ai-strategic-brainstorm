@@ -53,9 +53,10 @@ export const useLogs = () => {
     saveLogs([]);
   }, []);
 
-  const importLogs = useCallback((data: unknown) => {
+  const importLogs = useCallback((data: unknown): number => {
     const arr = Array.isArray(data) ? data : [data];
     const valid = arr.filter((d): d is LogEntry => d != null && typeof d === 'object' && 'id' in d && 'timestamp' in d);
+    if (valid.length === 0) return 0;
     const merged = [...valid, ...logs];
     const unique = [...new Map(merged.map(x => [x.id, x])).values()]
       .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
@@ -65,6 +66,7 @@ export const useLogs = () => {
     if (!saveLogs(unique)) {
       alert('ストレージ容量が不足しています。古いログを削除してください。');
     }
+    return valid.length;
   }, [logs]);
 
   return {
