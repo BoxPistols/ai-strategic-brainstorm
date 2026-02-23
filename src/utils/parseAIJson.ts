@@ -7,7 +7,7 @@ import { AIResults, FeasibilityScore } from '../types';
 export function parseAIJson(raw: string): AIResults {
   let text = raw.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
   const start = text.indexOf('{');
-  if (start === -1) throw new Error('No JSON object found in response');
+  if (start === -1) throw new Error('AIの回答を処理できませんでした。もう一度お試しください。');
   text = text.slice(start);
 
   // 素直にパース
@@ -15,7 +15,7 @@ export function parseAIJson(raw: string): AIResults {
     ?? tryParseTruncated(text)
     ?? tryRepairTruncated(text);
 
-  if (!parsed) throw new Error('Failed to parse AI JSON response');
+  if (!parsed) throw new Error('AIの回答を処理できませんでした。もう一度お試しください。');
 
   return validateStructure(parsed);
 }
@@ -89,7 +89,7 @@ function parseFeasibility(raw: unknown): FeasibilityScore | undefined {
  */
 function validateStructure(data: unknown): AIResults {
   if (typeof data !== 'object' || data === null) {
-    throw new Error('Parsed result is not an object');
+    throw new Error('AIの回答を処理できませんでした。もう一度お試しください。');
   }
 
   const obj = data as Record<string, unknown>;
