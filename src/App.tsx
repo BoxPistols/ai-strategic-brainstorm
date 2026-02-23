@@ -333,7 +333,12 @@ export default function App() {
                 <Suspense fallback={null}>
                     <WelcomeVideoModal
                         onClose={() => { localStorage.setItem('ai-brainstorm-welcomed', '1'); setShowWelcomeVideo(false) }}
-                        onStartTour={() => { localStorage.setItem('ai-brainstorm-welcomed', '1'); setShowWelcomeVideo(false); setShowTour(true) }}
+                        onStartTour={() => {
+                            localStorage.setItem('ai-brainstorm-welcomed', '1')
+                            setShowWelcomeVideo(false)
+                            // 動画モーダルのアンマウント完了後にツアー開始
+                            requestAnimationFrame(() => setShowTour(true))
+                        }}
                     />
                 </Suspense>
             )}
