@@ -27,7 +27,8 @@ export const FeasibilityBar: React.FC<FeasibilityBarProps> = ({ f }) => (
   <div className="mt-2 pt-2 border-t border-slate-100 dark:border-slate-700/40 space-y-1.5">
     <div className="flex items-center justify-between">
       <span className={`flex items-center gap-1 text-xs ${T.t3}`}>
-        <Shield className="w-3 h-3" />実現可能性
+        <Shield className="w-3 h-3" />
+        実現可能性
       </span>
       <span className={`text-xs font-bold ${feasibilityTextC(f.total)}`}>{f.total}</span>
     </div>

@@ -24,7 +24,11 @@ let sessionTotal = 0;
 let cycleTotal = 0;
 
 /** モデル別コスト計算 (JPY) */
-export function calculateCostJpy(modelId: string, promptTokens: number, completionTokens: number): number {
+export function calculateCostJpy(
+  modelId: string,
+  promptTokens: number,
+  completionTokens: number,
+): number {
   const cost = MODEL_COSTS[modelId];
   if (!cost) return 0;
   return (promptTokens * cost.inputPerM + completionTokens * cost.outputPerM) / 1_000_000;
@@ -92,14 +96,23 @@ export function getDailyTotal(): number {
 /** 予算チェック */
 export function checkBudget(callCostJpy: number, isProMode: boolean): BudgetWarning | null {
   if (callCostJpy > MAX_COST_PER_CALL) {
-    return { severity: 'critical', message: `1回のコスト ¥${callCostJpy.toFixed(2)} が上限 ¥${MAX_COST_PER_CALL} を超過しました` };
+    return {
+      severity: 'critical',
+      message: `1回のコスト ¥${callCostJpy.toFixed(2)} が上限 ¥${MAX_COST_PER_CALL} を超過しました`,
+    };
   }
   if (cycleTotal > MAX_COST_PER_CYCLE) {
-    return { severity: 'warn', message: `サイクル累計 ¥${cycleTotal.toFixed(2)} が上限 ¥${MAX_COST_PER_CYCLE} を超過しました` };
+    return {
+      severity: 'warn',
+      message: `サイクル累計 ¥${cycleTotal.toFixed(2)} が上限 ¥${MAX_COST_PER_CYCLE} を超過しました`,
+    };
   }
   const daily = getDailyTotal();
   if (!isProMode && daily > DAILY_ALERT_THRESHOLD) {
-    return { severity: 'info', message: `本日の利用額 ¥${daily.toFixed(0)} — APIキーを設定するとPro版が利用できます` };
+    return {
+      severity: 'info',
+      message: `本日の利用額 ¥${daily.toFixed(0)} — APIキーを設定するとPro版が利用できます`,
+    };
   }
   return null;
 }
