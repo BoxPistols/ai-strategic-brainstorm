@@ -48,7 +48,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const ip = getClientIP(req);
     if (!checkRateLimit(ip)) {
       return res.status(429).json({
-        error: 'リクエスト上限に達しました。しばらく時間をおくか、設定からAPIキーを入力してProモードでご利用ください。',
+        error:
+          'リクエスト上限に達しました。しばらく時間をおくか、設定からAPIキーを入力してProモードでご利用ください。',
       });
     }
   }
@@ -62,7 +63,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`,
+        Authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify(req.body),
     });
@@ -86,6 +87,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     return res.status(200).json(data);
   } catch (e) {
-    return res.status(502).json({ error: `OpenAI接続エラー: ${e instanceof Error ? e.message : String(e)}` });
+    return res
+      .status(502)
+      .json({ error: `OpenAI接続エラー: ${e instanceof Error ? e.message : String(e)}` });
   }
 }

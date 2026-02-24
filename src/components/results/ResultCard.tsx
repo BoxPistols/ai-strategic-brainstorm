@@ -14,25 +14,29 @@ interface ResultCardProps {
   depth?: number;
 }
 
-export const ResultCard: React.FC<ResultCardProps> = ({ 
-  idea, 
-  index, 
-  onDrillDown, 
-  drillingDownId, 
-  depth = 0 
+export const ResultCard: React.FC<ResultCardProps> = ({
+  idea,
+  index,
+  onDrillDown,
+  drillingDownId,
+  depth = 0,
 }) => {
   const isDrilling = drillingDownId === `${idea.title}-${index}`;
   const hasSubs = idea.subIdeas && idea.subIdeas.length > 0;
 
   return (
     <div className="space-y-3">
-      <div className={`${T.card} p-3.5 hover:border-blue-300 dark:hover:border-blue-700/50 transition-colors relative group`}>
+      <div
+        className={`${T.card} p-3.5 hover:border-blue-300 dark:hover:border-blue-700/50 transition-colors relative group`}
+      >
         <div className="flex items-start gap-2 mb-2">
-          <div className={`w-5 h-5 rounded bg-slate-100 dark:bg-slate-700/60 flex items-center justify-center text-xs font-bold ${T.t2} shrink-0`}>
+          <div
+            className={`w-5 h-5 rounded bg-slate-100 dark:bg-slate-700/60 flex items-center justify-center text-xs font-bold ${T.t2} shrink-0`}
+          >
             {index + 1}
           </div>
           <h4 className={`text-sm font-semibold ${T.t1} leading-snug flex-1`}>{idea.title}</h4>
-          
+
           {onDrillDown && !hasSubs && (
             <button
               onClick={() => onDrillDown(idea, index)}
@@ -41,24 +45,38 @@ export const ResultCard: React.FC<ResultCardProps> = ({
               title="このアイデアを深掘り"
               {...(index === 0 && depth === 0 ? { 'data-tour': 'result-drilldown' } : {})}
             >
-              {isDrilling ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Search className="w-3.5 h-3.5" />}
+              {isDrilling ? (
+                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+              ) : (
+                <Search className="w-3.5 h-3.5" />
+              )}
             </button>
           )}
         </div>
-        
+
         <div className="mb-2.5">
           <RichText text={idea.description} />
         </div>
-        
+
         <div className="space-y-1 pt-2 border-t border-slate-100 dark:border-slate-700/40">
           {[
-            { l: '優先度', v: idea.priority, c: priorityC }, 
-            { l: '工数', v: idea.effort, c: effortC, ico: <Clock className="w-2.5 h-2.5" /> }, 
-            { l: 'インパクト', v: idea.impact, c: impactC, ico: <TrendingUp className="w-2.5 h-2.5" /> }
-          ].map(r => (
+            { l: '優先度', v: idea.priority, c: priorityC },
+            { l: '工数', v: idea.effort, c: effortC, ico: <Clock className="w-2.5 h-2.5" /> },
+            {
+              l: 'インパクト',
+              v: idea.impact,
+              c: impactC,
+              ico: <TrendingUp className="w-2.5 h-2.5" />,
+            },
+          ].map((r) => (
             <div key={r.l} className="flex items-center justify-between text-xs">
-              <span className={`flex items-center gap-1 ${T.t3}`}>{r.ico}{r.l}</span>
-              <span className={`px-1.5 py-0.5 rounded-full border text-xs font-medium ${r.c(r.v)}`}>{ll(r.v)}</span>
+              <span className={`flex items-center gap-1 ${T.t3}`}>
+                {r.ico}
+                {r.l}
+              </span>
+              <span className={`px-1.5 py-0.5 rounded-full border text-xs font-medium ${r.c(r.v)}`}>
+                {ll(r.v)}
+              </span>
             </div>
           ))}
         </div>
@@ -68,13 +86,15 @@ export const ResultCard: React.FC<ResultCardProps> = ({
       {/* Sub-ideas (Recursive) */}
       {hasSubs && (
         <div className="ml-6 pl-4 border-l-2 border-blue-100 dark:border-blue-900/30 space-y-3">
-          <div className="text-[10px] font-bold text-blue-500 uppercase tracking-wider mb-1">Sub-plans</div>
+          <div className="text-[10px] font-bold text-blue-500 uppercase tracking-wider mb-1">
+            Sub-plans
+          </div>
           {idea.subIdeas!.map((sub, i) => (
-            <ResultCard 
-              key={`${sub.title}-${i}`} 
-              idea={sub} 
-              index={i} 
-              depth={depth + 1} 
+            <ResultCard
+              key={`${sub.title}-${i}`}
+              idea={sub}
+              index={i}
+              depth={depth + 1}
               onDrillDown={depth < 2 ? onDrillDown : undefined} // 深度制限
               drillingDownId={drillingDownId}
             />

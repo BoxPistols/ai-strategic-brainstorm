@@ -41,7 +41,11 @@ export const saveSettings = (s: Settings): void => {
  * ブラウザの「Clear site data」ボタンと同じ状態にしてアプリを初期化します。
  */
 export const clearAllData = async (): Promise<void> => {
-  if (window.confirm('すべての設定、履歴、キャッシュ、保存されたデータを完全に削除して初期状態に戻しますか？')) {
+  if (
+    window.confirm(
+      'すべての設定、履歴、キャッシュ、保存されたデータを完全に削除して初期状態に戻しますか？',
+    )
+  ) {
     // 1. LocalStorage & SessionStorage
     localStorage.clear();
     sessionStorage.clear();
@@ -49,7 +53,7 @@ export const clearAllData = async (): Promise<void> => {
     // 2. IndexedDB (もし使われていれば)
     if (window.indexedDB && window.indexedDB.databases) {
       const dbs = await window.indexedDB.databases();
-      dbs.forEach(db => {
+      dbs.forEach((db) => {
         if (db.name) window.indexedDB.deleteDatabase(db.name);
       });
     }
@@ -57,13 +61,13 @@ export const clearAllData = async (): Promise<void> => {
     // 3. Cache API
     if (window.caches) {
       const keys = await window.caches.keys();
-      await Promise.all(keys.map(key => window.caches.delete(key)));
+      await Promise.all(keys.map((key) => window.caches.delete(key)));
     }
 
     // 4. Service Workers
     if (window.navigator && navigator.serviceWorker) {
       const registrations = await navigator.serviceWorker.getRegistrations();
-      await Promise.all(registrations.map(reg => reg.unregister()));
+      await Promise.all(registrations.map((reg) => reg.unregister()));
     }
 
     // 5. リロードして完了

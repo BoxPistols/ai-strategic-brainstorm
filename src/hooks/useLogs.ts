@@ -23,29 +23,42 @@ export const useLogs = () => {
     saveSettings(s);
   }, []);
 
-  const saveLog = useCallback((pn: string, f: BrainstormForm, res: AIResults, q: string, modelName: string, depth: number) => {
-    if (stgSettings.logMode === 'off') return;
-    
-    const entry: LogEntry = {
-      id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
-      timestamp: new Date().toISOString(),
-      projectName: pn,
-      model: modelName,
-      depth,
-      form: f,
-      ...(stgSettings.logMode === 'all' ? { query: q, results: res } : { results: res })
-    };
-    
-    const updated = [entry, ...logs].slice(0, MAX_LOGS);
-    setLogs(updated);
-    debouncedSave(updated);
-  }, [logs, stgSettings, debouncedSave]);
+  const saveLog = useCallback(
+    (
+      pn: string,
+      f: BrainstormForm,
+      res: AIResults,
+      q: string,
+      modelName: string,
+      depth: number,
+    ) => {
+      if (stgSettings.logMode === 'off') return;
 
-  const deleteLog = useCallback((id: string) => {
-    const u = logs.filter(l => l.id !== id);
-    setLogs(u);
-    debouncedSave(u);
-  }, [logs, debouncedSave]);
+      const entry: LogEntry = {
+        id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+        timestamp: new Date().toISOString(),
+        projectName: pn,
+        model: modelName,
+        depth,
+        form: f,
+        ...(stgSettings.logMode === 'all' ? { query: q, results: res } : { results: res }),
+      };
+
+      const updated = [entry, ...logs].slice(0, MAX_LOGS);
+      setLogs(updated);
+      debouncedSave(updated);
+    },
+    [logs, stgSettings, debouncedSave],
+  );
+
+  const deleteLog = useCallback(
+    (id: string) => {
+      const u = logs.filter((l) => l.id !== id);
+      setLogs(u);
+      debouncedSave(u);
+    },
+    [logs, debouncedSave],
+  );
 
   const deleteAllLogs = useCallback(() => {
     if (!window.confirm('全ログを削除しますか？')) return;
@@ -53,21 +66,26 @@ export const useLogs = () => {
     saveLogs([]);
   }, []);
 
-  const importLogs = useCallback((data: unknown): number => {
-    const arr = Array.isArray(data) ? data : [data];
-    const valid = arr.filter((d): d is LogEntry => d != null && typeof d === 'object' && 'id' in d && 'timestamp' in d);
-    if (valid.length === 0) return 0;
-    const merged = [...valid, ...logs];
-    const unique = [...new Map(merged.map(x => [x.id, x])).values()]
-      .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
-      .slice(0, MAX_LOGS);
+  const importLogs = useCallback(
+    (data: unknown): number => {
+      const arr = Array.isArray(data) ? data : [data];
+      const valid = arr.filter(
+        (d): d is LogEntry => d != null && typeof d === 'object' && 'id' in d && 'timestamp' in d,
+      );
+      if (valid.length === 0) return 0;
+      const merged = [...valid, ...logs];
+      const unique = [...new Map(merged.map((x) => [x.id, x])).values()]
+        .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+        .slice(0, MAX_LOGS);
 
-    setLogs(unique);
-    if (!saveLogs(unique)) {
-      alert('ストレージ容量が不足しています。古いログを削除してください。');
-    }
-    return valid.length;
-  }, [logs]);
+      setLogs(unique);
+      if (!saveLogs(unique)) {
+        alert('ストレージ容量が不足しています。古いログを削除してください。');
+      }
+      return valid.length;
+    },
+    [logs],
+  );
 
   return {
     logs,
@@ -78,6 +96,6 @@ export const useLogs = () => {
     deleteLog,
     deleteAllLogs,
     importLogs,
-    updateSettings
+    updateSettings,
   };
 };

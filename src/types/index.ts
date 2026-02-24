@@ -1,4 +1,13 @@
-export type SessionType = 'product' | 'marketing' | 'growth' | 'innovation' | 'cx' | 'ops' | 'dx' | 'design-system' | 'other';
+export type SessionType =
+  | 'product'
+  | 'marketing'
+  | 'growth'
+  | 'innovation'
+  | 'cx'
+  | 'ops'
+  | 'dx'
+  | 'design-system'
+  | 'other';
 export type Priority = 'High' | 'Medium' | 'Low';
 export type Effort = 'High' | 'Medium' | 'Low';
 export type Impact = 'High' | 'Medium' | 'Low';
@@ -35,10 +44,10 @@ export interface BrainstormForm {
 }
 
 export interface FeasibilityScore {
-  total: number;          // 0-100 総合スコア
-  resource: number;       // 0-100 リソース充足度
+  total: number; // 0-100 総合スコア
+  resource: number; // 0-100 リソース充足度
   techDifficulty: number; // 0-100 技術的実現容易性（高い = 容易）
-  orgAcceptance: number;  // 0-100 組織受容性
+  orgAcceptance: number; // 0-100 組織受容性
 }
 
 export interface Idea {

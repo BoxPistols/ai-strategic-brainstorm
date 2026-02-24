@@ -5,15 +5,16 @@ import { AIResults, FeasibilityScore } from '../types';
  * コードフェンス付き、途中切れ、末尾ゴミ等に対応。
  */
 export function parseAIJson(raw: string): AIResults {
-  let text = raw.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+  let text = raw
+    .replace(/```json\n?/g, '')
+    .replace(/```\n?/g, '')
+    .trim();
   const start = text.indexOf('{');
   if (start === -1) throw new Error('AIの回答を処理できませんでした。もう一度お試しください。');
   text = text.slice(start);
 
   // 素直にパース
-  const parsed = tryParse(text)
-    ?? tryParseTruncated(text)
-    ?? tryRepairTruncated(text);
+  const parsed = tryParse(text) ?? tryParseTruncated(text) ?? tryRepairTruncated(text);
 
   if (!parsed) throw new Error('AIの回答を処理できませんでした。もう一度お試しください。');
 
@@ -21,7 +22,11 @@ export function parseAIJson(raw: string): AIResults {
 }
 
 function tryParse(text: string): unknown | null {
-  try { return JSON.parse(text); } catch { return null; }
+  try {
+    return JSON.parse(text);
+  } catch {
+    return null;
+  }
 }
 
 function tryParseTruncated(text: string): unknown | null {
@@ -48,9 +53,18 @@ function tryRepairTruncated(text: string): unknown | null {
 
   for (let i = 0; i < text.length; i++) {
     const ch = text[i];
-    if (esc) { esc = false; continue; }
-    if (ch === '\\' && inStr) { esc = true; continue; }
-    if (ch === '"') { inStr = !inStr; continue; }
+    if (esc) {
+      esc = false;
+      continue;
+    }
+    if (ch === '\\' && inStr) {
+      esc = true;
+      continue;
+    }
+    if (ch === '"') {
+      inStr = !inStr;
+      continue;
+    }
     if (inStr) continue;
     if (ch === '{' || ch === '[') depth++;
     else if (ch === '}' || ch === ']') {
@@ -94,22 +108,32 @@ function validateStructure(data: unknown): AIResults {
 
   const obj = data as Record<string, unknown>;
 
-  const understanding = typeof obj.understanding === 'string'
-    ? obj.understanding
-    : '';
+  const understanding = typeof obj.understanding === 'string' ? obj.understanding : '';
 
   const ideas = Array.isArray(obj.ideas)
     ? obj.ideas.map((item: unknown) => {
         if (typeof item !== 'object' || item === null) {
-          return { title: '(不明)', description: '', priority: 'Medium' as const, effort: 'Medium' as const, impact: 'Medium' as const };
+          return {
+            title: '(不明)',
+            description: '',
+            priority: 'Medium' as const,
+            effort: 'Medium' as const,
+            impact: 'Medium' as const,
+          };
         }
         const idea = item as Record<string, unknown>;
         return {
           title: typeof idea.title === 'string' ? idea.title : '(不明)',
           description: typeof idea.description === 'string' ? idea.description : '',
-          priority: (['High', 'Medium', 'Low'].includes(idea.priority as string) ? idea.priority : 'Medium') as 'High' | 'Medium' | 'Low',
-          effort: (['High', 'Medium', 'Low'].includes(idea.effort as string) ? idea.effort : 'Medium') as 'High' | 'Medium' | 'Low',
-          impact: (['High', 'Medium', 'Low'].includes(idea.impact as string) ? idea.impact : 'Medium') as 'High' | 'Medium' | 'Low',
+          priority: (['High', 'Medium', 'Low'].includes(idea.priority as string)
+            ? idea.priority
+            : 'Medium') as 'High' | 'Medium' | 'Low',
+          effort: (['High', 'Medium', 'Low'].includes(idea.effort as string)
+            ? idea.effort
+            : 'Medium') as 'High' | 'Medium' | 'Low',
+          impact: (['High', 'Medium', 'Low'].includes(idea.impact as string)
+            ? idea.impact
+            : 'Medium') as 'High' | 'Medium' | 'Low',
           feasibility: parseFeasibility(idea.feasibility),
         };
       })
@@ -118,7 +142,9 @@ function validateStructure(data: unknown): AIResults {
   return {
     understanding,
     ideas,
-    suggestions: Array.isArray(obj.suggestions) ? obj.suggestions.filter((s): s is string => typeof s === 'string') : undefined,
+    suggestions: Array.isArray(obj.suggestions)
+      ? obj.suggestions.filter((s): s is string => typeof s === 'string')
+      : undefined,
     keyIssue: typeof obj.keyIssue === 'string' ? obj.keyIssue : undefined,
     funnelStage: typeof obj.funnelStage === 'string' ? obj.funnelStage : undefined,
   };

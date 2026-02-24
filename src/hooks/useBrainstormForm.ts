@@ -22,33 +22,36 @@ export const useBrainstormForm = () => {
   const [form, setForm] = useState<BrainstormForm>(initialFormState);
   const [usedName, setUsedName] = useState('');
 
-  const sesLabel = useMemo(() => 
-    form.sessionType === 'other' ? (form.customSession || 'カスタム') : TYPES[form.sessionType],
-    [form.sessionType, form.customSession]
+  const sesLabel = useMemo(
+    () =>
+      form.sessionType === 'other' ? form.customSession || 'カスタム' : TYPES[form.sessionType],
+    [form.sessionType, form.customSession],
   );
-  
-  const suggestions = useMemo(() =>
-    getDeepDiveSuggestions(
-      form.sessionType,
-      form.productService,
-      form.issues.map(x => x.text).filter(Boolean),
-      (form.kpis || []).filter(k => k.label && k.value),
-      (form.competitors || []).some(c => c.name || c.url),
-    ),
-    [form.sessionType, form.productService, form.issues, form.kpis, form.competitors]
+
+  const suggestions = useMemo(
+    () =>
+      getDeepDiveSuggestions(
+        form.sessionType,
+        form.productService,
+        form.issues.map((x) => x.text).filter(Boolean),
+        (form.kpis || []).filter((k) => k.label && k.value),
+        (form.competitors || []).some((c) => c.name || c.url),
+      ),
+    [form.sessionType, form.productService, form.issues, form.kpis, form.competitors],
   );
-  
-  const issueStr = useMemo(() => 
-    form.issues
-      .filter(x => x.text.trim())
-      .map(x => {
-        let s = x.text;
-        if (x.detail) s += `（${x.detail}）`;
-        if (x.sub?.filter(Boolean).length) s += ': ' + x.sub.filter(Boolean).join(', ');
-        return s;
-      })
-      .join(' / '),
-    [form.issues]
+
+  const issueStr = useMemo(
+    () =>
+      form.issues
+        .filter((x) => x.text.trim())
+        .map((x) => {
+          let s = x.text;
+          if (x.detail) s += `（${x.detail}）`;
+          if (x.sub?.filter(Boolean).length) s += ': ' + x.sub.filter(Boolean).join(', ');
+          return s;
+        })
+        .join(' / '),
+    [form.issues],
   );
 
   const getValidProjectName = useCallback(() => {

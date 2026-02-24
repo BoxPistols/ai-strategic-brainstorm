@@ -6,8 +6,8 @@ const MAX = 80;
 const DEFAULT = 40;
 
 export const PRESETS = {
-  leftFocus:  70,
-  equal:      50,
+  leftFocus: 70,
+  equal: 50,
   rightFocus: 30,
 } as const;
 
@@ -25,12 +25,15 @@ export function usePanelResize() {
     localStorage.setItem(STORAGE_KEY, String(clamped));
   }, []);
 
-  const calcRatio = useCallback((clientX: number) => {
-    const container = containerRef.current;
-    if (!container) return;
-    const rect = container.getBoundingClientRect();
-    applyRatio(((clientX - rect.left) / rect.width) * 100);
-  }, [applyRatio]);
+  const calcRatio = useCallback(
+    (clientX: number) => {
+      const container = containerRef.current;
+      if (!container) return;
+      const rect = container.getBoundingClientRect();
+      applyRatio(((clientX - rect.left) / rect.width) * 100);
+    },
+    [applyRatio],
+  );
 
   const startDrag = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
@@ -68,9 +71,9 @@ export function usePanelResize() {
     };
   }, [isDragging, calcRatio]);
 
-  const activePreset = Object.entries(PRESETS).find(
-    ([, v]) => Math.abs(ratio - v) <= 3
-  )?.[0] as keyof typeof PRESETS | undefined;
+  const activePreset = Object.entries(PRESETS).find(([, v]) => Math.abs(ratio - v) <= 3)?.[0] as
+    | keyof typeof PRESETS
+    | undefined;
 
   return { ratio, applyRatio, startDrag, startTouchDrag, isDragging, containerRef, activePreset };
 }

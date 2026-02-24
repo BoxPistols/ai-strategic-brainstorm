@@ -53,15 +53,15 @@ export function selectModel(
 
   // generate で課題3つ以上 + 目標が複数行
   if (taskType === 'generate' && form) {
-    const issueCount = form.issues.filter(i => i.text.trim()).length;
+    const issueCount = form.issues.filter((i) => i.text.trim()).length;
     const multiGoals = form.teamGoals.includes('\n') || form.teamGoals.length > 60;
     if (issueCount >= 3 && multiGoals) {
       return { modelId: MINI, reason: `課題${issueCount}件+複数目標: 高精度モデル選択` };
     }
 
     // 競合・KPIデータあり → Mini
-    const hasCompetitors = (form.competitors || []).some(c => c.name.trim() || c.url.trim());
-    const hasKpis = (form.kpis || []).some(k => k.label.trim() && k.value.trim());
+    const hasCompetitors = (form.competitors || []).some((c) => c.name.trim() || c.url.trim());
+    const hasKpis = (form.kpis || []).some((k) => k.label.trim() && k.value.trim());
     if (hasCompetitors || hasKpis) {
       return { modelId: MINI, reason: '競合/KPIデータあり: 高精度モデル選択' };
     }

@@ -7,20 +7,20 @@ export const HR_REGEX = /人材|採用|エージェント|CA|RA|転職|求人|�
 
 /** 求職者ファネル（CA側） */
 export const SEEKER_FUNNEL = [
-  { stage: '認知・流入',   cr: '2-5%',   desc: 'スカウト・広告・口コミで候補者がサービスを知る' },
-  { stage: '登録',         cr: '30-50%', desc: '会員登録・プロフィール入力' },
-  { stage: 'CA面談',       cr: '60-80%', desc: 'キャリアの棚卸し・希望条件ヒアリング' },
-  { stage: '求人紹介',     cr: '40-60%', desc: 'マッチする求人を推薦' },
-  { stage: '応募・選考',   cr: '30-50%', desc: '書類選考→面接' },
+  { stage: '認知・流入', cr: '2-5%', desc: 'スカウト・広告・口コミで候補者がサービスを知る' },
+  { stage: '登録', cr: '30-50%', desc: '会員登録・プロフィール入力' },
+  { stage: 'CA面談', cr: '60-80%', desc: 'キャリアの棚卸し・希望条件ヒアリング' },
+  { stage: '求人紹介', cr: '40-60%', desc: 'マッチする求人を推薦' },
+  { stage: '応募・選考', cr: '30-50%', desc: '書類選考→面接' },
   { stage: '内定承諾→入社', cr: '50-70%', desc: '条件交渉→入社確定（成功報酬発生）' },
 ] as const;
 
 /** 企業クライアントファネル（RA側） */
 export const CLIENT_FUNNEL = [
-  { stage: 'リード獲得',     cr: '10-20%', desc: '新規開拓・問い合わせ' },
-  { stage: '契約締結',       cr: '20-40%', desc: '基本契約書締結・手数料率合意（年収の30-35%）' },
+  { stage: 'リード獲得', cr: '10-20%', desc: '新規開拓・問い合わせ' },
+  { stage: '契約締結', cr: '20-40%', desc: '基本契約書締結・手数料率合意（年収の30-35%）' },
   { stage: '求人受注・票作成', cr: '60-80%', desc: '求人要件ヒアリング→求人票作成' },
-  { stage: 'リピート受注',   cr: '40-60%', desc: '成約実績→継続依頼・追加求人' },
+  { stage: 'リピート受注', cr: '40-60%', desc: '成約実績→継続依頼・追加求人' },
 ] as const;
 
 /** 業界特有の隠れた構造課題 */
@@ -34,9 +34,9 @@ export const HIDDEN_ISSUES = [
 
 /** マッチング精度を左右する3変数 */
 export const MATCHING_VARS = [
-  { v: 'スキルマッチ',     desc: '技術力・経験・資格の合致度' },
+  { v: 'スキルマッチ', desc: '技術力・経験・資格の合致度' },
   { v: 'カルチャーマッチ', desc: '組織風土・働き方・価値観の適合度' },
-  { v: '期待値マッチ',     desc: '年収・キャリアパス・働き方条件の合意度' },
+  { v: '期待値マッチ', desc: '年収・キャリアパス・働き方条件の合意度' },
 ] as const;
 
 /** HR文脈かどうかを判定 */
@@ -58,15 +58,15 @@ export function getHRDomainContext(proMode: boolean): string {
 ■ RA（リクルーティングアドバイザー）: 企業側担当。開拓→契約→要件ヒアリング→求人票作成→候補者推薦
 
 ■ 求職者ファネル（各段階の業界目安転換率 ※企業規模・領域で大きく変動）:
-${SEEKER_FUNNEL.map(s => `  ${s.stage}: 目安${s.cr}`).join('\n')}
+${SEEKER_FUNNEL.map((s) => `  ${s.stage}: 目安${s.cr}`).join('\n')}
 
 ■ 企業クライアントファネル（業界目安 ※変動大）:
-${CLIENT_FUNNEL.map(s => `  ${s.stage}: 目安${s.cr}`).join('\n')}
+${CLIENT_FUNNEL.map((s) => `  ${s.stage}: 目安${s.cr}`).join('\n')}
 
 ■ 隠れた構造課題:
-${HIDDEN_ISSUES.map(h => `  - ${h}`).join('\n')}
+${HIDDEN_ISSUES.map((h) => `  - ${h}`).join('\n')}
 
-■ マッチング精度3変数: ${MATCHING_VARS.map(m => `${m.v}（${m.desc}）`).join('、')}
+■ マッチング精度3変数: ${MATCHING_VARS.map((m) => `${m.v}（${m.desc}）`).join('、')}
 
 【分析指示】
 - ユーザーの課題がファネルのどの段階のボトルネックか特定し funnelStage に出力
