@@ -6,7 +6,13 @@ describe('parseAIJson', () => {
     const input = JSON.stringify({
       understanding: 'テスト分析',
       ideas: [
-        { title: 'アイデア1', description: '詳細1', priority: 'High', effort: 'Low', impact: 'High' },
+        {
+          title: 'アイデア1',
+          description: '詳細1',
+          priority: 'High',
+          effort: 'Low',
+          impact: 'High',
+        },
       ],
       suggestions: ['質問1', '質問2'],
     });
@@ -25,14 +31,16 @@ describe('parseAIJson', () => {
   });
 
   it('前後にテキストがあるJSONを抽出できる', () => {
-    const input = 'Here is the result:\n{"understanding":"OK","ideas":[{"title":"T","description":"D","priority":"High","effort":"Low","impact":"Medium"}]}\nEnd.';
+    const input =
+      'Here is the result:\n{"understanding":"OK","ideas":[{"title":"T","description":"D","priority":"High","effort":"Low","impact":"Medium"}]}\nEnd.';
     const result = parseAIJson(input);
     expect(result.understanding).toBe('OK');
     expect(result.ideas[0].title).toBe('T');
   });
 
   it('末尾が切れたJSONを修復できる', () => {
-    const input = '{"understanding":"分析結果","ideas":[{"title":"A","description":"B","priority":"High","effort":"Low","impact":"High"},{"title":"C","description":"D","priority":"Medium","effort":"Medium","impact":"Med';
+    const input =
+      '{"understanding":"分析結果","ideas":[{"title":"A","description":"B","priority":"High","effort":"Low","impact":"High"},{"title":"C","description":"D","priority":"Medium","effort":"Medium","impact":"Med';
     const result = parseAIJson(input);
     expect(result.understanding).toBe('分析結果');
     expect(result.ideas.length).toBeGreaterThanOrEqual(1);
@@ -40,11 +48,11 @@ describe('parseAIJson', () => {
   });
 
   it('JSONが全く見つからない場合はエラー', () => {
-    expect(() => parseAIJson('これはテキストです')).toThrow('No JSON object found');
+    expect(() => parseAIJson('これはテキストです')).toThrow('AIの回答を処理できませんでした');
   });
 
   it('空文字列はエラー', () => {
-    expect(() => parseAIJson('')).toThrow('No JSON object found');
+    expect(() => parseAIJson('')).toThrow('AIの回答を処理できませんでした');
   });
 
   it('keyIssue/funnelStageがあれば保持される', () => {
@@ -88,13 +96,24 @@ describe('parseAIJson', () => {
   it('feasibilityスコアが正常にパースされる', () => {
     const input = JSON.stringify({
       understanding: 'OK',
-      ideas: [{
-        title: 'T', description: 'D', priority: 'High', effort: 'Low', impact: 'High',
-        feasibility: { total: 75, resource: 80, techDifficulty: 60, orgAcceptance: 85 },
-      }],
+      ideas: [
+        {
+          title: 'T',
+          description: 'D',
+          priority: 'High',
+          effort: 'Low',
+          impact: 'High',
+          feasibility: { total: 75, resource: 80, techDifficulty: 60, orgAcceptance: 85 },
+        },
+      ],
     });
     const result = parseAIJson(input);
-    expect(result.ideas[0].feasibility).toEqual({ total: 75, resource: 80, techDifficulty: 60, orgAcceptance: 85 });
+    expect(result.ideas[0].feasibility).toEqual({
+      total: 75,
+      resource: 80,
+      techDifficulty: 60,
+      orgAcceptance: 85,
+    });
   });
 
   it('feasibilityが欠落している場合はundefined', () => {
@@ -109,10 +128,16 @@ describe('parseAIJson', () => {
   it('feasibilityの不正値は0-100にクランプされる', () => {
     const input = JSON.stringify({
       understanding: 'OK',
-      ideas: [{
-        title: 'T', description: 'D', priority: 'High', effort: 'Low', impact: 'High',
-        feasibility: { total: 150, resource: -20, techDifficulty: 'abc', orgAcceptance: 50.7 },
-      }],
+      ideas: [
+        {
+          title: 'T',
+          description: 'D',
+          priority: 'High',
+          effort: 'Low',
+          impact: 'High',
+          feasibility: { total: 150, resource: -20, techDifficulty: 'abc', orgAcceptance: 50.7 },
+        },
+      ],
     });
     const result = parseAIJson(input);
     const f = result.ideas[0].feasibility!;
