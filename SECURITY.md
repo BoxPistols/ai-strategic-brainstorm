@@ -14,7 +14,7 @@
 以下のいずれかの方法で報告をお願いします:
 
 1. **GitHub Security Advisories**（推奨）
-   [Security Advisories](https://github.com/BoxPistols/ai-strategic-brainstorm/security/advisories/new) から非公開で報告できます
+   [Security Advisories](https://github.com/BoxPistols/brain-brain-brain/security/advisories/new) から非公開で報告できます
 
 2. **メールでの連絡**
    GitHub プロフィールに記載の連絡先にご連絡ください

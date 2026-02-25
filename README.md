@@ -7,9 +7,9 @@
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![React](https://img.shields.io/badge/React-18+-61DAFB.svg)
 ![TypeScript Ready](https://img.shields.io/badge/Vite-5+-646CFF.svg)
-![CI](https://github.com/BoxPistols/ai-strategic-brainstorm/actions/workflows/ci.yml/badge.svg)
+![CI](https://github.com/BoxPistols/brain-brain-brain/actions/workflows/ci.yml/badge.svg)
 
-**Live Demo:** https://ai-strategic-brainstorm.vercel.app
+**Live Demo:** https://brain-brain-brain.vercel.app
 
 ## このツールについて
 
@@ -60,8 +60,8 @@ AI Strategic Brainstormは、課題をツリー構造で分解し、複数のAI�
 ### Installation
 
 ```bash
-git clone https://github.com/BoxPistols/ai-strategic-brainstorm.git
-cd ai-strategic-brainstorm
+git clone https://github.com/BoxPistols/brain-brain-brain.git
+cd brain-brain-brain
 npm install
 ```
 
@@ -101,7 +101,7 @@ Anthropic Haiku 4.5がデフォルトで使用可能です（Claude.aiアーテ�
 ## Project Structure
 
 ```
-ai-strategic-brainstorm/
+brain-brain-brain/
 ├── public/
 │   └── favicon.svg
 ├── src/
