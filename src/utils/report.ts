@@ -229,6 +229,51 @@ export const downloadPdf = async (md: string, pn: string) => {
     .save();
 };
 
+/** 個別の深掘り結果を PDF ダウンロード */
+export const downloadDeepDivePdf = async (question: string, answer: string) => {
+  const { default: html2pdf } = await import('html2pdf.js');
+  const md = `# ${question}\n\n${answer}`;
+  const html = mdToHtml(md);
+  const container = document.createElement('div');
+  container.innerHTML = html;
+  container.style.cssText =
+    'font-family:-apple-system,"Hiragino Sans",sans-serif;font-size:12px;line-height:1.7;color:#1a1a1a;max-width:700px;padding:20px';
+  container.querySelectorAll('h1').forEach((el) => {
+    el.style.cssText =
+      'font-size:18px;margin:16px 0 8px;border-bottom:2px solid #2563eb;padding-bottom:4px';
+  });
+  container.querySelectorAll('h2').forEach((el) => {
+    el.style.cssText = 'font-size:15px;margin:14px 0 6px;color:#1e40af';
+  });
+  container.querySelectorAll('h3').forEach((el) => {
+    el.style.cssText = 'font-size:13px;margin:10px 0 4px;color:#334155';
+  });
+  container.querySelectorAll('table').forEach((el) => {
+    el.style.cssText = 'border-collapse:collapse;width:100%;margin:8px 0;font-size:11px';
+  });
+  container.querySelectorAll('th,td').forEach((el) => {
+    (el as HTMLElement).style.cssText = 'border:1px solid #cbd5e1;padding:4px 8px;text-align:left';
+  });
+  container.querySelectorAll('th').forEach((el) => {
+    el.style.cssText += ';background:#f1f5f9;font-weight:600';
+  });
+  container.querySelectorAll('blockquote').forEach((el) => {
+    el.style.cssText = 'border-left:3px solid #93c5fd;padding-left:12px;margin:8px 0;color:#475569';
+  });
+
+  const ts = new Date().toISOString().slice(0, 10);
+  await html2pdf()
+    .set({
+      margin: [10, 10, 10, 10],
+      filename: `深掘り_${ts}.pdf`,
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+      pagebreak: { mode: ['avoid-all', 'css', 'legacy'] },
+    } as Record<string, unknown>)
+    .from(container)
+    .save();
+};
+
 /** PPTX エクスポート */
 export const downloadPptx = async (
   pn: string,

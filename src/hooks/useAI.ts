@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { isHRContext, getHRDomainContext } from '../constants/domainContext';
-import { parseAIJson } from '../utils/parseAIJson';
+import { parseAIJson, extractMarkdown } from '../utils/parseAIJson';
 import { BrainstormForm, AIResults, ChatMessage, ConnStatus, Idea, LLMProvider } from '../types';
 import {
   callAI,
@@ -534,10 +534,11 @@ ${pastRefinements ? `\n【過去のブラッシュアップ履歴】\n${pastRefi
           // Markdown 混在の回答ではJSON抽出できない場合がある（正常）
         }
 
-        const entry = { review: reviewText, answer: raw, results: structRes };
+        const cleanAnswer = extractMarkdown(raw);
+        const entry = { review: reviewText, answer: cleanAnswer, results: structRes };
         const newResults = {
           ...results,
-          refinement: raw,
+          refinement: cleanAnswer,
           refinements: [...(results.refinements || []), entry],
         };
         setResults(newResults);
@@ -743,8 +744,11 @@ ${pastDives ? `\n【過去の深掘り履歴】\n${pastDives}` : ''}${ddCiCtx ? 
           localModel,
         );
 
+        const cleanAnswer = extractMarkdown(raw);
         setResults((p) =>
-          p ? { ...p, deepDives: [...(p.deepDives || []), { question: q, answer: raw }] } : p,
+          p
+            ? { ...p, deepDives: [...(p.deepDives || []), { question: q, answer: cleanAnswer }] }
+            : p,
         );
         // 深掘りの会話も履歴に追加
         const newHist = [...recentHist, userMsg, { role: 'assistant' as const, content: raw }];

@@ -14,11 +14,14 @@ import {
   Presentation,
   ChevronDown,
   Loader2,
+  Clipboard,
+  Check,
 } from 'lucide-react';
 import { AIResults, Idea } from '../../types';
 import { T } from '../../constants/theme';
 import { ResultCard } from '../results/ResultCard';
 import { RichText } from '../results/RichText';
+import { downloadDeepDivePdf } from '../../utils/report';
 
 type DlFormat = 'md' | 'txt' | 'csv' | 'pdf' | 'pdfDl' | 'pptx';
 
@@ -61,6 +64,43 @@ const LoadingSkeleton = () => (
     </div>
   </div>
 );
+
+const DeepDiveCard: React.FC<{ question: string; answer: string }> = ({ question, answer }) => {
+  const [copied, setCopied] = useState(false);
+  const handleCopy = async () => {
+    await navigator.clipboard.writeText(answer);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  };
+  return (
+    <div className={`${T.card} p-5 border-l-2 border-l-brand-light dark:border-l-brand relative`}>
+      <div className="flex items-start justify-between gap-2 mb-2">
+        <p className={`text-xs font-semibold ${T.t1} flex-1`}>{question}</p>
+        <div className="flex items-center gap-1 shrink-0">
+          <button
+            onClick={handleCopy}
+            className={`p-1.5 rounded-md ${T.btnGhost} border-0 transition`}
+            title="コピー"
+          >
+            {copied ? (
+              <Check className="w-3.5 h-3.5 text-emerald-500" />
+            ) : (
+              <Clipboard className="w-3.5 h-3.5" />
+            )}
+          </button>
+          <button
+            onClick={() => downloadDeepDivePdf(question, answer)}
+            className={`p-1.5 rounded-md ${T.btnGhost} border-0 transition`}
+            title="PDFで保存"
+          >
+            <Printer className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      </div>
+      <RichText text={answer} />
+    </div>
+  );
+};
 
 const EmptyState = () => (
   <div className="flex flex-col items-center justify-center py-20 text-center">
@@ -298,13 +338,7 @@ export const ResultsPane: React.FC<ResultsPaneProps> = ({
             </button>
           </div>
           {results.deepDives.map((dd, i) => (
-            <div
-              key={i}
-              className={`${T.card} p-5 border-l-2 border-l-brand-light dark:border-l-brand`}
-            >
-              <p className={`text-xs font-semibold ${T.t1} mb-2`}>{dd.question}</p>
-              <RichText text={dd.answer} />
-            </div>
+            <DeepDiveCard key={i} question={dd.question} answer={dd.answer} />
           ))}
         </div>
       )}
