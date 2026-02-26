@@ -137,7 +137,7 @@ export const useAI = () => {
     console.debug(`[modelRouter] ${taskType}: ${decision.reason} → ${resolvedId}`);
 
     const result: APICallResult = isLocal
-      ? await callAILocal(localEndpoint!, resolvedId, msgs, maxTokens, jsonMode)
+      ? await callAILocal(localEndpoint || '', resolvedId, msgs, maxTokens, jsonMode)
       : pro
         ? await callAIWithKey(apiKey.trim(), resolvedId, msgs, maxTokens, jsonMode)
         : await callAI(resolvedId, msgs, maxTokens, jsonMode);

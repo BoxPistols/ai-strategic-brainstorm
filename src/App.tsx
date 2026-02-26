@@ -150,7 +150,9 @@ export default function App() {
   const setProvider = (p: LLMProvider) => {
     setProviderState(p);
     localStorage.setItem('ai-brainstorm-provider', p);
-    if (!localEndpoint) {
+    // エンドポイントが空 or 前プロバイダーのデフォルトなら新プロバイダーのデフォルトに更新
+    const prevDefault = PROVIDER_DEFAULTS[provider].endpoint;
+    if (!localEndpoint || localEndpoint === prevDefault) {
       const ep = PROVIDER_DEFAULTS[p].endpoint;
       setLocalEndpointState(ep);
       localStorage.setItem('ai-brainstorm-endpoint', ep);

@@ -221,8 +221,11 @@ export const testConnLocal = async (endpoint: string, modelId: string): Promise<
   } catch {
     throw new Error('ローカルLLMに接続できません。サーバーが起動しているか確認してください。');
   }
+  if (!r.ok) {
+    const body = await r.text().catch(() => '');
+    throw new Error(localFriendlyError(r.status, body));
+  }
   const d = await r.json();
-  if (!r.ok) throw new Error(localFriendlyError(r.status, d?.error?.message || JSON.stringify(d)));
   return d.model || modelId;
 };
 
