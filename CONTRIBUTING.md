@@ -5,8 +5,8 @@ AI Strategic Brainstorm へのコントリビューションを歓迎します�
 ## 開発環境のセットアップ
 
 ```bash
-git clone https://github.com/BoxPistols/ai-strategic-brainstorm.git
-cd ai-strategic-brainstorm
+git clone https://github.com/BoxPistols/brain-brain-brain.git
+cd brain-brain-brain
 npm install
 npm run dev      # 開発サーバー起動
 npm run build    # ビルド確認

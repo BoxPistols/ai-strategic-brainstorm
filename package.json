@@ -1,10 +1,10 @@
 {
-  "name": "ai-strategic-brainstorm",
+  "name": "brain-brain-brain",
   "private": false,
   "version": "1.0.0",
   "description": "Expert-grade strategic ideation tool powered by multi-provider AI APIs",
   "author": "BoxPistols",
-  "homepage": "https://ai-strategic-brainstorm.vercel.app",
+  "homepage": "https://brain-brain-brain.vercel.app",
   "license": "MIT",
   "type": "module",
   "scripts": {
@@ -73,6 +73,6 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/BoxPistols/ai-strategic-brainstorm.git"
+    "url": "https://github.com/BoxPistols/brain-brain-brain.git"
   }
 }

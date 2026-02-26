@@ -1657,7 +1657,7 @@ X を修正して。制約:
 
 ## 29. 本プロジェクトの設定解説
 
-本プロジェクト（ai-strategic-brainstorm）で採用している Claude Code 設定：
+本プロジェクト（brain-brain-brain）で採用している Claude Code 設定：
 
 ### CLAUDE.md
 

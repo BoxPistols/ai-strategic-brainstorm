@@ -360,7 +360,7 @@ export const AppHelpModal: React.FC<AppHelpModalProps> = ({
         {/* Footer */}
         <div className="px-6 py-4 border-t border-slate-200/60 dark:border-white/10 shrink-0 flex items-center gap-3">
           <a
-            href="https://github.com/BoxPistols/ai-strategic-brainstorm"
+            href="https://github.com/BoxPistols/brain-brain-brain"
             target="_blank"
             rel="noopener noreferrer"
             className={`p-2.5 rounded-xl border border-slate-200/60 dark:border-white/10 bg-white/60 dark:bg-white/5 hover:bg-slate-100 dark:hover:bg-white/10 transition-colors ${T.t2}`}
