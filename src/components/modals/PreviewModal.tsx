@@ -50,7 +50,7 @@ export const PreviewModal: React.FC<PreviewProps> = ({ md, pn, onClose }) => {
       aria-label="レポートプレビュー"
     >
       <div
-        className={`${T.card} w-full max-w-3xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden`}
+        className={`${T.card} w-full max-w-6xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden`}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}

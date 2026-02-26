@@ -68,9 +68,13 @@ const LoadingSkeleton = () => (
 const DeepDiveCard: React.FC<{ question: string; answer: string }> = ({ question, answer }) => {
   const [copied, setCopied] = useState(false);
   const handleCopy = async () => {
-    await navigator.clipboard.writeText(answer);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1500);
+    try {
+      await navigator.clipboard.writeText(answer);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch {
+      // clipboard API unavailable (e.g. insecure context)
+    }
   };
   return (
     <div className={`${T.card} p-5 border-l-2 border-l-brand-light dark:border-l-brand relative`}>

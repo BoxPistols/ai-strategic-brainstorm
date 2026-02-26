@@ -86,8 +86,8 @@ export const ResultCard: React.FC<ResultCardProps> = ({
       {/* Sub-ideas (Recursive) */}
       {hasSubs && (
         <div className="ml-6 pl-4 border-l-2 border-brand-50 dark:border-brand-light/30 space-y-3">
-          <div className="text-[10px] font-bold text-brand dark:text-brand-light uppercase tracking-wider mb-1">
-            Sub-plans
+          <div className="text-[10px] font-bold text-brand dark:text-brand-light tracking-wider mb-1">
+            サブプラン
           </div>
           {idea.subIdeas!.map((sub, i) => (
             <ResultCard
