@@ -12,6 +12,8 @@ const friendlyError = (status: number, body: string): string => {
     return 'APIキーの権限が不足しています。右上の設定パネルからキーを確認してください。';
   if (status === 404)
     return `選択中のAIモデルが利用できません。設定パネルから別のモデルを選んでください。${body ? `（${body.slice(0, 80)}）` : ''}`;
+  if (status === 504)
+    return 'AIの応答がタイムアウトしました。分析深度を下げるか、入力を短くしてから再度お試しください。';
   if (status === 500 || status === 502 || status === 503)
     return 'AIサービスが一時的に混み合っています。1〜2分後に再度お試しください。';
   return `通信エラーが発生しました。インターネット接続を確認し、再度お試しください。（${status}）`;
@@ -77,8 +79,18 @@ export const testConn = async (modelId: string, apiKey = ''): Promise<string> =>
       messages: [{ role: 'user', content: 'Say exactly: OK' }],
     }),
   });
+  if (!r.ok) {
+    let body = '';
+    try {
+      const text = await r.text();
+      const parsed = JSON.parse(text);
+      body = parsed?.error?.message || parsed?.error || text;
+    } catch {
+      /* ignore */
+    }
+    throw new Error(friendlyError(r.status, String(body).slice(0, 300)));
+  }
   const d = await r.json();
-  if (!r.ok) throw new Error(friendlyError(r.status, d?.error?.message || JSON.stringify(d)));
   return d.model || resolvedId;
 };
 
@@ -107,7 +119,18 @@ const callAPI = async (
       ...(jsonMode ? { response_format: { type: 'json_object' } } : {}),
     }),
   });
-  if (!r.ok) throw new Error(friendlyError(r.status, (await r.text()).slice(0, 300)));
+  if (!r.ok) {
+    let body = '';
+    try {
+      body = await r.text();
+      const parsed = JSON.parse(body);
+      if (parsed?.error?.message) body = parsed.error.message;
+      else if (parsed?.error && typeof parsed.error === 'string') body = parsed.error;
+    } catch {
+      // テキストがそのまま body に残る
+    }
+    throw new Error(friendlyError(r.status, body.slice(0, 300)));
+  }
   const data = await r.json();
   const content = data.choices?.[0]?.message?.content || '';
   if (!content && data.choices?.[0]?.finish_reason === 'length') {
