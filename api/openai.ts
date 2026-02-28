@@ -35,7 +35,9 @@ function getClientIP(req: VercelRequest): string {
 }
 
 /** レスポンスボディを安全にパースする */
-async function safeParseResponse(response: Response): Promise<{ data: unknown; raw: string }> {
+async function safeParseResponse(
+  response: Response,
+): Promise<{ data: Record<string, unknown> | null; raw: string }> {
   const raw = await response.text();
   try {
     return { data: JSON.parse(raw), raw };
@@ -106,7 +108,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       });
     }
 
-    if (!data) {
+    if (data === null) {
       console.error(
         `[openai-proxy] Invalid JSON from OpenAI: model=${model} body=${raw.slice(0, 200)}`,
       );
