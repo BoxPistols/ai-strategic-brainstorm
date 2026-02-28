@@ -12,6 +12,16 @@ const friendlyError = (status: number, body: string): string => {
     return 'APIキーの権限が不足しています。右上の設定パネルからキーを確認してください。';
   if (status === 404)
     return `選択中のAIモデルが利用できません。設定パネルから別のモデルを選んでください。${body ? `（${body.slice(0, 80)}）` : ''}`;
+  if (status === 400) {
+    const msg = (() => {
+      try {
+        return JSON.parse(body)?.error?.message || body;
+      } catch {
+        return body;
+      }
+    })();
+    return `リクエストエラー（400）: ${msg ? msg.slice(0, 200) : '詳細不明'}`;
+  }
   if (status === 504)
     return 'AIの応答がタイムアウトしました。分析深度を下げるか、入力を短くしてから再度お試しください。';
   if (status === 500 || status === 502 || status === 503)
@@ -114,7 +124,7 @@ const callAPI = async (
     body: JSON.stringify({
       model: modelId,
       ...tokenParam,
-      temperature: 0.85,
+      ...(usesCompletionTokens ? {} : { temperature: 0.85 }),
       messages: msgs,
       ...(jsonMode ? { response_format: { type: 'json_object' } } : {}),
     }),
